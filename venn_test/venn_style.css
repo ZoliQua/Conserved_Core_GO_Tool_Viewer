@@ -1,0 +1,25 @@
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+#diagramSelector {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+#showDiagramButton {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#diagramContainer {
+    width: 70%;
+    height: 70%;
+    border: 2px solid #ccc;
+    padding: 15%;
+}

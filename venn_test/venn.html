@@ -1,0 +1,104 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSV to SVG</title>
+</head>
+<body>
+  <!-- Select elements for TSV and SVG files -->
+  <label for="tsvSelect">Select a TSV file:</label>
+  <select id="tsvSelect"></select>
+  <br>
+  <label for="svgSelect">Select an SVG file:</label>
+  <select id="svgSelect"></select>
+  
+  <script>
+    // Function to read a file as text
+    function readFileAsText(file, callback) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const fileContent = event.target.result;
+        callback(fileContent);
+      };
+      reader.readAsText(file);
+    }
+
+    // Input select elements for TSV and SVG files
+    const tsvSelect = document.getElementById('tsvSelect');
+    const svgSelect = document.getElementById('svgSelect');
+
+    // Dynamically populate the select options
+    fetchFiles();
+
+    // Function to fetch TSV and SVG files
+    async function fetchFiles() {
+      const dataFolder = 'data'; // Folder containing TSV and SVG files
+      const response = await fetch(dataFolder);
+      const files = await response.json();
+
+      const tsvOptions = [];
+      const svgOptions = [];
+
+      for (const file of files) {
+        if (file.endsWith('2022-01.tsv')) {
+          tsvOptions.push(file);
+        } else if (file.endsWith('.svg')) {
+          svgOptions.push(file);
+        }
+      }
+
+      // Populate the TSV select options
+      tsvOptions.forEach((tsvFile) => {
+        const option = document.createElement('option');
+        option.value = tsvFile;
+        option.textContent = tsvFile;
+        tsvSelect.appendChild(option);
+      });
+
+      // Populate the SVG select options
+      svgOptions.forEach((svgFile) => {
+        const option = document.createElement('option');
+        option.value = svgFile;
+        option.textContent = svgFile;
+        svgSelect.appendChild(option);
+      });
+    }
+
+    // Listen for changes in the select elements
+    tsvSelect.addEventListener('change', handleTsvSelectChange);
+    svgSelect.addEventListener('change', handleSvgSelectChange);
+
+    // Function to handle TSV select change
+    function handleTsvSelectChange() {
+      const selectedTsvFile = tsvSelect.value;
+      if (selectedTsvFile) {
+        fetch(`${dataFolder}/${selectedTsvFile}`)
+          .then((response) => response.text())
+          .then(processTsvData);
+      }
+    }
+
+    // Function to handle SVG select change
+    function handleSvgSelectChange() {
+      const selectedSvgFile = svgSelect.value;
+      if (selectedSvgFile) {
+        fetch(`${dataFolder}/${selectedSvgFile}`)
+          .then((response) => response.text())
+          .then(processSvgData);
+      }
+    }
+
+    // Function to process TSV data
+    function processTsvData(tsvData) {
+      console.log('TSV data:', tsvData);
+      // Implement TSV processing logic here
+    }
+
+    // Function to process SVG data
+    function processSvgData(svgData) {
+      console.log('SVG data:', svgData);
+      // Implement SVG processing logic here
+    }
+  </script>
+</body>
+</html>

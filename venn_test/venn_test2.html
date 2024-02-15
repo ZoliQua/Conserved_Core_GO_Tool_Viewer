@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Venn Diagram Viewer</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Venn Diagram Viewer</h1>
+    
+    <label for="selectVenn">Select Venn Diagram:</label>
+    <select id="selectVenn">
+        <option value="">Select an option</option>
+    </select>
+
+    <button id="showDiagram">Show Diagram</button>
+
+    <div id="vennContainer">
+        <!-- SVG will be displayed here -->
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Folder where your SVG files are located
+            const folderPath = "data/";
+
+            // Populate the select element with options
+            for (let i = 2; i <= 7; i++) {
+                $("#selectVenn").append(`<option value="${i}">Venn Diagram ${i}</option>`);
+            }
+
+            // Function to load and display the selected SVG
+            $("#showDiagram").click(function () {
+                const selectedValue = $("#selectVenn").val();
+
+                if (selectedValue !== "") {
+                    const svgFilePath = `${folderPath}ortholog_venn_${selectedValue}.svg`;
+
+                    // Clear the previous SVG
+                    $("#vennContainer").empty();
+
+                    // Load and append the SVG to the container
+                    $.get(svgFilePath, function (data) {
+                        $("#vennContainer").append(data.documentElement);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
