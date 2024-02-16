@@ -1,3 +1,6 @@
+// Description: This script is used to load the Venn Diagram SVG file and a selected GO term TSV file, calculate overlaps, and display the data in the DataTable.
+// Author: Zoltan Dul, Phd 2024
+
 var dataTableVar
 
 // Path to the SVG file (Venn Diagram)
@@ -195,7 +198,6 @@ function getKogGroupsForCount(countId) {
 
     // Return the KOG groups associated with this combination
     return kogGroupMapping[combination] || [];
-
 }
 
 function filterDataForKogGroups(kogGroupIds) {
@@ -308,20 +310,21 @@ function reloadDataIntoDataTable(filteredData) {
 
 function displayKogGroups(kogGroups) {
     // Generate the HTML content for the list of KOG groups
-    let content = '<ul>';
+    let contentToDisplay = '<ul>';
     kogGroups.forEach(group => {
-        content += `<li><a href="#" class="kog-group" data-kog-id="${group}">${group}</a></li>`;
+        contentToDisplay += `<li><a href="#" class="kog-group" data-kog-id="${group}">${group}</a></li>`;
     });
-    content += '</ul>';
+    contentToDisplay += '</ul>';
 
     // Filter the data for the KOG groups and reload it into the DataTable in cases of click on SVG text.
     const filteredData = filterDataForKogGroups(kogGroups);
     reloadDataIntoDataTable(filteredData);
 
     // Display the list of KOG Groups in the detailsContentBox
-    $('#detailsContentBox').html(content).show();
+    $('#detailsContentBox').html(contentToDisplay).show();
 
     // Click event handler for a single KOG group link
+    // If you click on a KOG group, the DataTable will be filtered for that KOG group
     $('.kog-group').click(function(e) {
         e.preventDefault();
         const kogGroupId = $(this).text();
@@ -351,7 +354,7 @@ function displayKogHeader(countId) {
 }
 
 function showKogGroups(countId) {
-    //
+    // Extract the combination from the countId (e.g., 'Count_ABC' -> 'ABC')
     const kogGroups = getKogGroupsForCount(countId);
 
     // Display the KOG groups
