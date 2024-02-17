@@ -1,4 +1,5 @@
 <?php
+// Conserved Core GO_TOOL - Main PHP File
 // Get visitor's IP address. Considering the possibility of the visitor being behind a proxy
 $ip = $_SERVER['REMOTE_ADDR'];
 if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {

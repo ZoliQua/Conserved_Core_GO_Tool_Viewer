@@ -1,3 +1,4 @@
+// Conserved Core GO_TOOL - Scripts
 // Description: This script is used to load the Venn Diagram SVG file and a selected GO term TSV file, calculate overlaps, and display the data in the DataTable.
 // Author: Zoltan Dul, Phd 2024
 
