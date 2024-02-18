@@ -546,7 +546,8 @@ $(document).ready(function() {
                     if (index === 0) return true;
 
                     const columns = row.split('\t');
-                    if (columns.length > 6) { // 7 initial columns + 14 extra columns
+                    // 7 initial columns + 14 extra columns, while flipping hit and non-hit columns
+                    if (columns.length > 6) { 
                         tableHtml += `<tr>
                                         <td class="lineKOGHeader"><a href="http://eggnog5.embl.de/#/app/results?target_nogs=${columns[0]}" target="_blank">${columns[0]}</a></td>
                                         <td>${columns[1]}</td>
@@ -608,7 +609,8 @@ $(document).ready(function() {
                                         if (data.endsWith('Non-Hit')) {
                                             return data.replace('Non-Hit', 'Total');
                                         }
-                                        return data; // Return the original data if no replacement is needed
+                                        // Return the original data if no replacement is needed
+                                        return data; 
                                     }
                                 }
                             },
