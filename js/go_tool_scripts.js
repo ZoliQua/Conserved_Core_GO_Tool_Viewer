@@ -217,7 +217,7 @@ function filterDataForKogGroups(kogGroupIds) {
     return filteredLines.join('\n');
 }
 
-function reloadDataIntoDataTable(filteredData) {
+function reloadDataIntoDataTable(filteredData, OverlappedSpecies) {
     // Split the filtered data back into lines
     const lines = filteredData.trim().split('\n');
 
@@ -257,6 +257,44 @@ function reloadDataIntoDataTable(filteredData) {
                     var sheet = xlsx.xl.worksheets['sheet1.xml'];
                     // Change the sheet name in the Excel file
                     $('worksheet', sheet).attr('name', 'GO_Tool_Export');
+            
+                    // Assuming OverlappedSpecies is a string or can be converted to a string.
+                    var overlappedSpeciesText = 'Overlapped Species: ' + OverlappedSpecies.toString();
+            
+                    // Insert custom row at the top of the Excel file
+                    var row = sheet.createElement('row');
+                    row.setAttribute('r', 1); // Sets the row number (1-based index)
+            
+                    var cell = sheet.createElement('c');
+                    cell.setAttribute('t', 'inlineStr'); // Set cell type to inline string
+                    cell.setAttribute('r', 'A1'); // Reference to the first cell in the row
+            
+                    var is = sheet.createElement('is'); // InlineStr element to hold the text
+                    var t = sheet.createElement('t'); // Text element
+                    t.textContent = overlappedSpeciesText; // Set text content to the variable
+            
+                    // Append elements correctly
+                    is.appendChild(t);
+                    cell.appendChild(is);
+                    row.appendChild(cell);
+            
+                    // Prepend the custom row to the sheet
+                    var sheetData = $('sheetData', sheet);
+                    sheetData.prepend(row);
+            
+                    // Update row indices and cell references for existing rows to accommodate the new row
+                    $('row', sheetData).each(function() {
+                        // Skip the first row since it's our custom row
+                        if (this !== row) {
+                            var rowIndex = parseInt($(this).attr('r'), 10) + 1; // Increment row index
+                            $(this).attr('r', rowIndex.toString());
+                            $('c', this).each(function() {
+                                var cellRef = $(this).attr('r');
+                                var newRef = cellRef.replace(/\d+/, rowIndex.toString());
+                                $(this).attr('r', newRef);
+                            });
+                        }
+                    });
                 }
             },
         ]
@@ -309,7 +347,7 @@ function reloadDataIntoDataTable(filteredData) {
 }
 
 
-function displayKogGroups(kogGroups) {
+function displayKogGroups(kogGroups, headerSpecies) {
     // Generate the HTML content for the list of KOG groups
     let contentToDisplay = '<ul>';
     kogGroups.forEach(group => {
@@ -319,7 +357,7 @@ function displayKogGroups(kogGroups) {
 
     // Filter the data for the KOG groups and reload it into the DataTable in cases of click on SVG text.
     const filteredData = filterDataForKogGroups(kogGroups);
-    reloadDataIntoDataTable(filteredData);
+    reloadDataIntoDataTable(filteredData, headerSpecies);
 
     // Display the list of KOG Groups in the detailsContentBox
     $('#detailsContentBox').html(contentToDisplay).show();
@@ -330,7 +368,7 @@ function displayKogGroups(kogGroups) {
         e.preventDefault();
         const kogGroupId = $(this).text();
         const filteredData = filterDataForKogGroups(kogGroupId);
-        reloadDataIntoDataTable(filteredData);
+        reloadDataIntoDataTable(filteredData, headerSpecies);
     });
 }
 
@@ -352,14 +390,15 @@ function displayKogHeader(countId) {
     // Display the list of relevant species in the #detailsHeaderBox
     $('#detailsHeaderBox').html(headerSpecies).show();
 
+    return headerSpecies;
 }
 
-function showKogGroups(countId) {
+function showKogGroups(countId, headerSpecies) {
     // Extract the combination from the countId (e.g., 'Count_ABC' -> 'ABC')
     const kogGroups = getKogGroupsForCount(countId);
 
     // Display the KOG groups
-    displayKogGroups(kogGroups);
+    displayKogGroups(kogGroups, headerSpecies);
 }
 
 
@@ -500,12 +539,12 @@ $(document).ready(function() {
                         const kogGroups = getKogGroupsForCount(svgTextId);
                         // Filter the DataTable based on the KOG groups
                         filterDataTableForKogGroups(kogGroups);
-                        // Display the KOG groups
-                        displayKogGroups(kogGroups);
                         // Display the KOG header
-                        displayKogHeader(svgTextId);
+                        const headerSpecies = displayKogHeader(svgTextId);
+                        // Display the KOG groups
+                        displayKogGroups(kogGroups, headerSpecies);
                         // Show the details table
-                        showKogGroups(svgTextId);
+                        showKogGroups(svgTextId, headerSpecies);
                     }
                 });
 
