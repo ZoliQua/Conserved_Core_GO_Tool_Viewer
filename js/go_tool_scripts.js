@@ -259,7 +259,7 @@ function reloadDataIntoDataTable(filteredData, OverlappedSpecies) {
                     $('worksheet', sheet).attr('name', 'GO_Tool_Export');
             
                     // Assuming OverlappedSpecies is a string or can be converted to a string.
-                    var overlappedSpeciesText = 'Overlapped Species: ' + OverlappedSpecies.toString();
+                    var overlappedSpeciesText = OverlappedSpecies.toString();
             
                     // Insert custom row at the top of the Excel file
                     var row = sheet.createElement('row');
@@ -296,7 +296,7 @@ function reloadDataIntoDataTable(filteredData, OverlappedSpecies) {
                         }
                     });
                 }
-            },
+            }, 'print'
         ]
     });
 
