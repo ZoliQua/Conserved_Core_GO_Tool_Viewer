@@ -658,7 +658,7 @@ $(document).ready(function() {
                                 // Change the sheet name in the Excel file
                                 $('worksheet', sheet).attr('name', 'GO_Tool_Export');
                             }
-                        },
+                        }, 'print'
                     ]
                 });
 
