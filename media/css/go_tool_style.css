@@ -145,6 +145,15 @@ th, td {
     margin-top: 10px;
 }
 
+#goTermInformation {
+    width: 100%;
+    border: 3px solid #ccc;
+    padding: 15px;
+    background: #dedede;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
 #detailsTableWrapper {
     position: fixed; /* Fixed position ensures the table stays at the same place even if you scroll */
     top: 10%; /* Adjust these values to position the table */

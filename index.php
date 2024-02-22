@@ -45,6 +45,10 @@ file_put_contents($filePath, $logString, FILE_APPEND);
         <h1>Gene Ontology Data Viewer</h1>
         <div id="goHeaderContainer"></div>
 
+        <div id="goTermInformation">
+            Currently we are using data retreived in 2022.02 from the <a href="http://www.geneontology.org/" target="_blank">Gene Ontology</a> website.
+        </div>
+
         <div id="goTermRequest">
             <label for="goSelector">GO Term: </label>
             <select id="goSelector">
