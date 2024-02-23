@@ -26,7 +26,6 @@ file_put_contents($filePath, $logString, FILE_APPEND);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Viewer</title>
     <link rel="stylesheet" type="text/css" href="media/css/go_tool_style.css">
-    <link rel="stylesheet" type="text/css" href="media/css/go.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="media/css/table.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="media/css/table_jui.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -42,7 +41,7 @@ file_put_contents($filePath, $logString, FILE_APPEND);
 </head>
 <body>
     <div class="container">
-        <h1>Gene Ontology Data Viewer</h1>
+        <h1>Gene Ontology Data Viewer BC</h1>
         <div id="goHeaderContainer"></div>
 
         <div id="goTermInformation">
@@ -50,15 +49,24 @@ file_put_contents($filePath, $logString, FILE_APPEND);
         </div>
 
         <div id="goTermRequest">
-            <label for="goSelector">GO Term: </label>
-            <select id="goSelector">
-                <!-- Options will be added using jQuery -->
-            </select>
-            <select id="hitSelector">
-                <option value="hit">hit Proteins</option>
-                <option value="total">total Proteins</option>
-            </select>
-            <button id="loadDataBtn">Load Data</button>
+            <div id="goTermRequestHeader">«
+                <label for="goSelector">GO Term: </label>
+                <select id="goSelector">
+                    <!-- Options will be added using jQuery -->
+                </select>
+                <select id="hitSelector">
+                    <option value="hit">hit Proteins</option>
+                    <option value="total">total Proteins</option>
+                </select>
+                <button id="loadDataBtn">Load Data</button>
+            </div>
+            <div id="goTermRequestSettings">
+                <label for="showAll">Show Venn Diagram</label>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
         </div>
 
         <div id="diagramBox">

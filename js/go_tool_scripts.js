@@ -469,6 +469,8 @@ $(document).ready(function() {
         }
     }
 
+    // Hide the original select element
+    var $goSelector = $('#goSelector').hide();
     // Add options to the selector dynamically
     $.each(list_of_terms, function(key, value) {
         $('#goSelector').append($('<option>', {
@@ -477,7 +479,53 @@ $(document).ready(function() {
         }));
     });
 
+    // Create a visible text input for autocomplete and a hidden input to store the selected ID
+    var $autocompleteInput = $('<input type="text" id="goSelectorInput">').insertBefore($goSelector);
+    var $hiddenInput = $('<input type="hidden" id="selectedGoTermId">').insertBefore($goSelector);
+
+    // Prepare the source data for autocomplete
+    var autocompleteSource = $.map(list_of_terms, function(description, id) {
+        return {
+            label: id + ': ' + description, // Display format
+            value: id.toLowerCase().replace(/:/g, '-') // Value to be used when an item is selected
+        };
+    });
+
+    // Initialize autocomplete on the new input
+    $autocompleteInput.autocomplete({
+        source: autocompleteSource,
+        minLength: 0, // Minimum number of characters to trigger autocomplete
+        select: function(event, ui) {
+            // Update the visible input with the full text (ID + description)
+            $autocompleteInput.val(ui.item.label);
+            // Update the hidden input with the selected ID
+            $hiddenInput.val(ui.item.value);
+            // Update the original select element with the selected GO term ID
+            $goSelector.val(ui.item.value);
+
+            // Prevent the widget from updating the input with the item.value
+            event.preventDefault();
+
+            // You might want to trigger any action that should happen on selecting an option, like form submission or data loading
+            // $('#loadDataBtn').click(); // Example: trigger the click event of the Load Data button
+        }
+    }).focus(function () {
+        // Show all options when the input gets focus
+        $(this).autocomplete("search", "");
+    });
+
+    // Custom rendering of autocomplete items (optional, for better display)
+    $autocompleteInput.autocomplete("instance")._renderItem = function(ul, item) {
+         // Escape special characters in the user's input to use in a regex
+         var userInput = $.ui.autocomplete.escapeRegex(this.term);
+         var t = item.label.replace(new RegExp("(" + userInput + ")", "gi"), "<strong>$1</strong>");
+         return $("<li>")
+            .append("<div>" + t + "</div>")
+            .appendTo(ul);
+    };
+
     $('#detailsTable').hide();
+    $('#diagramBox').hide();
 
      // Make each row clickable to toggle extra columns
     $('#dataTable').on('click', 'tr', function() {
@@ -486,6 +534,8 @@ $(document).ready(function() {
 
     // Event listener for button click
     $('#loadDataBtn').click(function() {
+        // Show diagramBox
+        $('#diagramBox').show();
         // Get the selected GO term
         const selectedGO = $('#goSelector').val();
         // Convert the selected GO term to the format used in the TSV file
