@@ -41,7 +41,7 @@ file_put_contents($filePath, $logString, FILE_APPEND);
 </head>
 <body>
     <div class="container">
-        <h1>Gene Ontology Data Viewer BC</h1>
+        <h1>Gene Ontology Data Viewer</h1>
         <div id="goHeaderContainer"></div>
 
         <div id="goTermInformation">
