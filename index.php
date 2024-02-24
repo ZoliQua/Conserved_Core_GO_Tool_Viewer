@@ -13,7 +13,7 @@ $browser = $_SERVER['HTTP_USER_AGENT'];
 $logString = date("Y-m-d H:i:s") . " - IP: " . $ip . " - Browser: " . $browser . "\n";
 
 // Specify the file path
-$filePath = "visitors.log";
+$filePath = "logs/visitors.log";
 
 // Append the logString to the file
 file_put_contents($filePath, $logString, FILE_APPEND);
