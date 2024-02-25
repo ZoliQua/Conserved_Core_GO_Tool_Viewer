@@ -524,9 +524,6 @@ $(document).ready(function() {
             .appendTo(ul);
     };
 
-    $('#detailsTable').hide();
-    $('#diagramBox').hide();
-
      // Make each row clickable to toggle extra columns
     $('#dataTable').on('click', 'tr', function() {
       $('#dataTable').DataTable(); // Redraw the table without resetting paging
@@ -719,7 +716,10 @@ $(document).ready(function() {
         });
     });
 
-    // When a row in the main table is clicked
+    // Hide the detailsTable on page load
+    $('#detailsTable').hide();
+
+    // When a row in the main table is clicked on show more details
     $('#dataTable').on('click', '.show-more', function() {
 
         // Find the parent row of the clicked "Show More" element
@@ -788,7 +788,28 @@ $(document).ready(function() {
     // Event listener for the hitSelector dropdown change
     $('#hitSelector').change(function() {
         // Trigger the data loading and overlap calculation process here
-        $('#loadDataBtn').click(); // This is a simple way to re-trigger data loading and processing
+        $('#loadDataBtn').click();
     });
+
+    // Hide diagramBox on page load
+    $('#diagramBox').hide();
+
+    // Event listener for #checkboxVenn change #diagramBox visibility
+    $("#checkboxVenn").change(function(){
+        if(this.checked) {
+          $("#diagramBox").show();
+        } else {
+          $("#diagramBox").hide();
+        }
+      });
+
+    // Event listener for #checkboxVenn change #diagramBox visibility
+    $("#checkboxTable").change(function(){
+        if(this.checked) {
+          $("#dataTable_wrapper").show();
+        } else {
+          $("#dataTable_wrapper").hide();
+        }
+      });
 
 });

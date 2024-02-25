@@ -41,15 +41,14 @@ file_put_contents($filePath, $logString, FILE_APPEND);
 </head>
 <body>
     <div class="container">
-        <h1>Gene Ontology Data Viewer</h1>
-        <div id="goHeaderContainer"></div>
+        <h1>Conserved Code GO Finder Tool</h1>
 
         <div id="goTermInformation">
             Currently we are using data retreived in 2022.02 from the <a href="http://www.geneontology.org/" target="_blank">Gene Ontology</a> website.
         </div>
 
         <div id="goTermRequest">
-            <div id="goTermRequestHeader">«
+            <div id="goTermRequestHeader">
                 <label for="goSelector">GO Term: </label>
                 <select id="goSelector">
                     <!-- Options will be added using jQuery -->
@@ -63,11 +62,19 @@ file_put_contents($filePath, $logString, FILE_APPEND);
             <div id="goTermRequestSettings">
                 <label for="showAll">Show Venn Diagram</label>
                 <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" id="checkboxVenn" checked>
+                    <span class="slider"></span>
+                </label>
+
+                <label for="showAll">Show Table</label>
+                <label class="switch">
+                    <input type="checkbox" id="checkboxTable" checked>
                     <span class="slider"></span>
                 </label>
             </div>
         </div>
+        
+        <div id="goHeaderContainer"></div>
 
         <div id="diagramBox">
             <div id="diagramDetailContainer">
