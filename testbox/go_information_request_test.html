@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GO Term Information Fetcher</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var goTerm = "GO:0098542"; // Example GO term, dynamically set this as needed
+
+            var url = "https://www.ebi.ac.uk/QuickGO/services/ontology/go/terms/" + goTerm;
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    if(data.numberOfHits > 0) {
+                        // Assuming we are interested in the first result
+                        var result = data.results[0]; 
+                        var goTermInformation = "<h2>GO Term Information</h2>";
+                        goTermInformation += "<p><strong>Id:</strong> " + result.id + "</p>";
+                        goTermInformation += "<p><strong>Name:</strong> " + result.name + "</p>";
+                        goTermInformation += "<p><strong>Definition:</strong> " + result.definition.text + "</p>";
+
+                        // Synonyms
+                        if(result.synonyms.length > 0) {
+                            goTermInformation += "<h3>Synonyms</h3><ul>";
+                            $.each(result.synonyms, function(index, synonym) {
+                                goTermInformation += "<li>" + synonym.name + " (" + synonym.type + ")</li>";
+                            });
+                            goTermInformation += "</ul>";
+                        }
+
+                        // Children
+                        if(result.children.length > 0) {
+                            goTermInformation += "<h3>Children</h3><ul>";
+                            $.each(result.children, function(index, child) {
+                                goTermInformation += "<li>" + child.id + " (" + child.relation + ")</li>";
+                            });
+                            goTermInformation += "</ul>";
+                        }
+
+                        $("#goTermInformation").html(goTermInformation);
+                    } else {
+                        $("#goTermInformation").html("<p>No information found for this GO term.</p>");
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log("Failed to fetch GO term information: ", textStatus, errorThrown);
+                    $("#goTermInformation").html("<p>Error fetching data.</p>");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="goTermInformation">
+        <!-- GO term information will be displayed here -->
+    </div>
+</body>
+</html>

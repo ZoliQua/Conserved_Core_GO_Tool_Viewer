@@ -2,9 +2,11 @@
 // Description: This script is used to load the Venn Diagram SVG file and a selected GO term TSV file, calculate overlaps, and display the data in the DataTable.
 // Author: Zoltan Dul, Phd 2024
 
+// DataTable variable
 var dataTableVar
-
-// Path to the SVG file (Venn Diagram)
+// Conatiner array for KOG group mapping
+let arrayKogGroupMapping = {};
+// Set the path to the SVG file (Venn Diagram)
 const svgFile = "data/ortholog_venn_7e.svg";
 
 // List of the names of species to show in the SVG
@@ -120,6 +122,58 @@ function convertToLinks(cellData) {
     }
 }
 
+function loadAmiGoInfo(goTerm) {
+
+    var url = "https://www.ebi.ac.uk/QuickGO/services/ontology/go/terms/" + goTerm;
+
+    $.ajax({
+        url: url,
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            if(data.numberOfHits > 0) {
+                // Assuming we are interested in the first result
+                var result = data.results[0]; 
+                var goTermInfo1 = "<h3 class='goTermInfoHeaders'>GO Term Information</h3>";
+                goTermInfo1 += "<p><strong>Id:</strong> " + result.id + "</p>";
+                goTermInfo1 += "<p><strong>Name:</strong> " + result.name + "</p>";
+                goTermInfo1 += "<p><strong>Link to AmiGO:</strong> <a href='https://amigo.geneontology.org/amigo/term/" + goTerm + "' class='generalLink' target='_blank'>" + result.id + "</a></p>";
+                goTermInfo1 += "<p><strong>Definition:</strong> " + result.definition.text + "</p>";
+
+                // Synonyms
+                goTermInfo2 = "";
+                if(result.synonyms.length > 0) {
+                    goTermInfo2 += "<h3 class='goTermInfoHeaders'>Synonyms</h3><ul>";
+                    $.each(result.synonyms, function(index, synonym) {
+                        goTermInfo2 += "<li>" + synonym.name + " (" + synonym.type + ")</li>";
+                    });
+                    goTermInfo2 += "</ul>";
+                }
+
+                // Children
+                goTermInfo3 = "";
+                if(result.children.length > 0) {
+                    goTermInfo3 += "<h3 class='goTermInfoHeaders'>Children</h3><ul>";
+                    $.each(result.children, function(index, child) {
+                        goTermInfo3 += "<li>" + child.id + " (" + child.relation + ")</li>";
+                    });
+                    goTermInfo3 += "</ul>";
+                }
+
+                $("#goTermInfo1").html(goTermInfo1);
+                $("#goTermInfo2").html(goTermInfo2);
+                $("#goTermInfo3").html(goTermInfo3);
+            } else {
+                $("#goTermInformation").html("<p>No information found for this GO term.</p>");
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log("Failed to fetch GO term information: ", textStatus, errorThrown);
+            $("#goTermInformation").html("<p>Error fetching data.</p>");
+        }
+    });
+}
+
 function loadSvg(svgFile) {
     $.ajax({
         url: svgFile,
@@ -139,6 +193,7 @@ function loadSvg(svgFile) {
 }
 
 function updateSvgSpeciesLabels() {
+    // Using global variable columnNames
     for (const [placeholder, columnName] of Object.entries(columnNames)) {
         $('#diagramContainer').find(`text:contains('${placeholder}')`).each(function() {
             $(this).text(columnName);
@@ -146,8 +201,17 @@ function updateSvgSpeciesLabels() {
     }
 }
 
-// Raw data from the TSV file
-let kogGroupMapping = {};
+function updateSvgCounts(overlaps) {
+    for (const [combination, count] of Object.entries(overlaps)) {
+        const elementId = `Count_${combination}`;
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.textContent = count;
+        } else {
+            console.error(`Element with id '${elementId}' not found`);
+        }
+    }
+}
 
 function calculateOverlaps(data) {
     let combinations = getAllCombinations(['A', 'B', 'C', 'D', 'E', 'F', 'G']);
@@ -157,7 +221,7 @@ function calculateOverlaps(data) {
     // Retrieve the selected option from hitSelector
     let hitSelectorValue = $('#hitSelector').val();
     // Reset mapping
-    kogGroupMapping = {}; 
+    arrayKogGroupMapping = {}; 
 
     data.split('\n').forEach((line, index) => {
         // Skip header row
@@ -181,10 +245,10 @@ function calculateOverlaps(data) {
             if (isExactMatch(comb, speciesFlags)) {
                 overlaps[comb]++;
                 // Add the KOG group to the mapping
-                if (!kogGroupMapping[comb]) {
-                    kogGroupMapping[comb] = [];
+                if (!arrayKogGroupMapping[comb]) {
+                    arrayKogGroupMapping[comb] = [];
                 }
-                kogGroupMapping[comb].push(kogGroupId);
+                arrayKogGroupMapping[comb].push(kogGroupId);
             }
         });
     });
@@ -193,12 +257,12 @@ function calculateOverlaps(data) {
     return overlaps;
 }
 
-function getKogGroupsForCount(countId) {
+function getKogGroupsFromCountItem(countId) {
     // Extract the combination from the countId (e.g., 'Count_ABC' -> 'ABC')
     const combination = countId.replace('Count_', '');
 
     // Return the KOG groups associated with this combination
-    return kogGroupMapping[combination] || [];
+    return arrayKogGroupMapping[combination] || [];
 }
 
 function filterDataForKogGroups(kogGroupIds) {
@@ -217,6 +281,80 @@ function filterDataForKogGroups(kogGroupIds) {
     return filteredLines.join('\n');
 }
 
+function getTableHtml(sourceData) {
+    // Split the data into rows
+    const rows = sourceData.split('\n');
+    let tableHead = `<thead>
+                    <tr>
+                        <th>Group ID</th>
+                        <th>Average H/M</th>
+                        <th>Total H/M</th>
+                        <th>Hit Proteins</th>
+                        <th>Total Proteins</th>
+                        <th>Hit Species</th>
+                        <th>Total Species</th>
+                        <th class="extra">A. thaliana Hit</th>
+                        <th class="extra">C. elegans Hit</th>
+                        <th class="extra">D. melanogaster Hit</th>
+                        <th class="extra">D. rerio Hit</th>
+                        <th class="extra">H. sapiens Hit</th>
+                        <th class="extra">S. cerevisiae Hit</th>
+                        <th class="extra">S. pombe Hit</th>
+                        <th class="extra">A. thaliana Non-Hit</th>
+                        <th class="extra">C. elegans Non-Hit</th>
+                        <th class="extra">D. melanogaster Non-Hit</th>
+                        <th class="extra">D. rerio Non-Hit</th>
+                        <th class="extra">H. sapiens Non-Hit</th>
+                        <th class="extra">S. cerevisiae Non-Hit</th>
+                        <th class="extra">S. pombe Non-Hit</th>
+                        <th>More</th>
+                    </tr>
+                    </thead>`;
+    
+    let tableHtml = tableHead;
+    tableHtml += "<tbody>";
+
+    $.each(rows, function(index, row) {
+        // Skip the header row
+        if (index === 0) return true;
+        // Split row by tab to get columns
+        const columns = row.split('\t');
+        // 7 initial columns + 14 extra columns, while flipping hit and non-hit columns
+        if (columns.length > 6) { 
+            tableHtml += `<tr>
+                            <td class="lineKOGHeader"><a href="http://eggnog5.embl.de/#/app/results?target_nogs=${columns[0]}" class='generalLink' target="_blank">${columns[0]}</a></td>
+                            <td>${columns[1]}</td>
+                            <td>${columns[2]}</td>
+                            <td>${columns[3]}</td>
+                            <td>${columns[4]}</td>
+                            <td>${columns[5]}</td>
+                            <td>${columns[6]}</td>
+                            <td class="extra">${columns[14]}</td>
+                            <td class="extra">${columns[15]}</td>
+                            <td class="extra">${columns[16]}</td>
+                            <td class="extra">${columns[17]}</td>
+                            <td class="extra">${columns[18]}</td>
+                            <td class="extra">${columns[19]}</td>
+                            <td class="extra">${columns[20]}</td>
+                            <td class="extra">${columns[7]}</td>
+                            <td class="extra">${columns[8]}</td>
+                            <td class="extra">${columns[9]}</td>
+                            <td class="extra">${columns[10]}</td>
+                            <td class="extra">${columns[11]}</td>
+                            <td class="extra">${columns[12]}</td>
+                            <td class="extra">${columns[13]}</td>
+                            <td><span class="show-more">Show More</span></td>
+                        </tr>`;
+        }
+    });
+    // Close the table body
+    tableHtml += "</tbody>";
+    // Copy the header to the footer
+    tableHtml += tableHead.replace('thead', 'tfoot');
+    // Return the HTML content
+    return tableHtml;
+}
+
 function reloadDataIntoDataTable(filteredData, OverlappedSpecies) {
     // Split the filtered data back into lines
     const lines = filteredData.trim().split('\n');
@@ -228,7 +366,8 @@ function reloadDataIntoDataTable(filteredData, OverlappedSpecies) {
 
     // Initialize the DataTable
     let dataTable = $('#dataTable').DataTable({
-        dom: 'Bfrtip',
+        "ordering": [[1, 'desc']],
+        dom: '<"d-flex justify-content-between"<"d-flex"l><"d-flex"B><"d-flex"f>>rtip',
         buttons: [
             {
                 extend: 'csv',
@@ -303,11 +442,11 @@ function reloadDataIntoDataTable(filteredData, OverlappedSpecies) {
     // Clear the existing data in DataTable
     dataTable.clear();
 
+    // Add the new rows to the DataTable based on the filteredData then draw the DataTable
     if (!(lines.length === 1 && lines[0] === '')) {
         lines.forEach(row => {
             // Split row by tab to get columns
             const columns = row.split('\t');
-
             // Construct newRow according to the specified order flip hit and non-hit.
             let newRow = [];
 
@@ -315,17 +454,15 @@ function reloadDataIntoDataTable(filteredData, OverlappedSpecies) {
             for (let i = 0; i <= 6; i++) {
                 if (i === 0) { 
                     // First column with a link to KOG
-                    newRow.push(`<td><a href="http://eggnog5.embl.de/#/app/results?target_nogs=${columns[i]}" target="_blank">${columns[i]}</a></td>`);
+                    newRow.push(`<td><a href="http://eggnog5.embl.de/#/app/results?target_nogs=${columns[i]}" class='generalLink' target="_blank">${columns[i]}</a></td>`);
                 } else {
                     newRow.push(`<td>${columns[i]}</td>`);
                 }
             }
-
             // Columns 14-20
             for (let i = 14; i <= 20; i++) {
                 newRow.push(`<td class="extra" style="display:none;">${columns[i]}</td>`);
             }
-
             // Columns 7-13
             for (let i = 7; i <= 13; i++) {
                 newRow.push(`<td class="extra" style="display:none;">${columns[i]}</td>`);
@@ -333,10 +470,8 @@ function reloadDataIntoDataTable(filteredData, OverlappedSpecies) {
 
             // Append "Show More" button in the last cell
             newRow.push(`<td><span class="show-more">Show More</span></td>`);
-
             // Join newRow array to form the row HTML
             let rowHtml = `<tr>${newRow.join("")}</tr>`;
-
             // Add the row HTML to the DataTable
             dataTable.row.add($(rowHtml)).draw(false); // Use draw(false) for optimal performance
         });
@@ -345,7 +480,6 @@ function reloadDataIntoDataTable(filteredData, OverlappedSpecies) {
         dataTable.draw();
     }
 }
-
 
 function displayKogGroups(kogGroups, headerSpecies) {
     // Generate the HTML content for the list of KOG groups
@@ -393,14 +527,66 @@ function displayKogHeader(countId) {
     return headerSpecies;
 }
 
-function showKogGroups(countId, headerSpecies) {
-    // Extract the combination from the countId (e.g., 'Count_ABC' -> 'ABC')
-    const kogGroups = getKogGroupsForCount(countId);
+function displayDataTable(tableHtml) {
 
-    // Display the KOG groups
-    displayKogGroups(kogGroups, headerSpecies);
+    var exportFilename = 'go_tool_export';
+    var exportTitle = 'GO_Tool_Export';
+
+    $('#dataTable').html(tableHtml);
+    if ($.fn.dataTable.isDataTable('#dataTable')) {
+        $('#dataTable').DataTable().destroy();
+    }
+    let dataTableVar = $('#dataTable').dataTable({
+        "paging": true,
+        "searching": true,
+        "ordering": [[1, 'desc']],
+        dom: '<"d-flex justify-content-between"<"d-flex"l><"d-flex"B><"d-flex"f>>rtip',
+        buttons: [
+            {
+                extend: 'csv',
+                filename: exportFilename,
+                exportOptions: {
+                    columns: ':not(:last-child)',
+                    format: {
+                        header: function (data) {
+                            console.log("Header Data:", data); // Debugging line
+                            if (data.endsWith('Non-Hit')) {
+                                console.log("Replacing Non-Hit in:", data); // Debugging line
+                                return data.replace('Non-Hit', 'Total');
+                            }
+                            return data;
+                        }
+                    }                    
+                }
+            },
+            {
+                extend: 'excelHtml5',
+                title: exportTitle,
+                filename: exportFilename,
+                footer: false,
+                exportOptions: {
+                    columns: ':not(:last-child)',
+                    format: {
+                        header: function (data) {
+                            console.log("Header Data:", data); // Debugging line
+                            if (data.endsWith('Non-Hit')) {
+                                console.log("Replacing Non-Hit in:", data); // Debugging line
+                                return data.replace('Non-Hit', 'Total');
+                            }
+                            return data;
+                        }
+                    }
+                },
+                customize: function(xlsx) {
+                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                    // Change the sheet name in the Excel file
+                    $('worksheet', sheet).attr('name', exportTitle);
+                }
+            }, 'print'
+        ]
+    });
+    return dataTableVar;
 }
-
 
 function getAllCombinations(elements) {
     let result = [];
@@ -432,18 +618,49 @@ function isExactMatch(combination, dataFlags) {
     return matchCount === combination.length;
 }
 
+function autocompleteGOInputBox() {
+    // Create a visible text input for autocomplete and a hidden input to store the selected ID
+    var $autocompleteInput = $('#goSelectorInput');
+    var $hiddenInput = $('#goSelectedTermId');
 
+    // Prepare the source data for autocomplete
+    var autocompleteGOTermSource = $.map(list_of_terms, function(description, id) {
+        return {
+            // Display format
+            label: id + ': ' + description,
+            // Value to be used when a GO item is selected
+            value: id.toLowerCase().replace(/:/g, '-')
+        };
+    });
 
-function updateSvgCounts(overlaps) {
-    for (const [combination, count] of Object.entries(overlaps)) {
-        const elementId = `Count_${combination}`;
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.textContent = count;
-        } else {
-            console.error(`Element with id '${elementId}' not found`);
+    // Initialize autocomplete on the new input
+    $autocompleteInput.autocomplete({
+        // Autocomplete source
+        source: autocompleteGOTermSource,
+        // Minimum number of characters to trigger autocomplete
+        minLength: 0,
+        select: function(event, ui) {
+            // Update the visible input with the full text (ID + description)
+            $autocompleteInput.val(ui.item.label);
+            // Update the hidden input with the selected ID
+            $hiddenInput.val(ui.item.value);
+            // Prevent the widget from updating the input with the item.value
+            event.preventDefault();
         }
-    }
+    }).focus(function () {
+        // Show all options when the input gets focus
+        $(this).autocomplete("search", "");
+    });
+
+    // Custom rendering of autocomplete items (optional, for better display)
+    $autocompleteInput.autocomplete("instance")._renderItem = function(ul, item) {
+            // Escape special characters in the user's input to use in a regex
+            var userInput = $.ui.autocomplete.escapeRegex(this.term);
+            var t = item.label.replace(new RegExp("(" + userInput + ")", "gi"), "<strong>$1</strong>");
+            return $("<li>")
+            .append("<div>" + t + "</div>")
+            .appendTo(ul);
+    };
 }
 
 $('#closeDetailsTable').click(function() {
@@ -453,78 +670,11 @@ $('#closeDetailsTable').click(function() {
 $( "#detailsTableWrapper" ).draggable();
 
 $(document).ready(function() {
-    
-    // Function to filter DataTable based on KOG groups
-    function filterDataTableForKogGroups(kogGroups) {
-        if (dataTableVar && dataTableVar.api) {
-            // Clear current search
-            dataTableVar.api().search('');
 
-            // Apply search for each KOG group and draw. Adjust as necessary for your DataTable version.
-            kogGroups.forEach(kogGroup => {
-                dataTableVar.api().search(kogGroup, true, false);
-            });
+    // Initialize the autocomplete for GO input box
+    autocompleteGOInputBox()
 
-            dataTableVar.api().draw();
-        }
-    }
-
-    // Hide the original select element
-    var $goSelector = $('#goSelector').hide();
-    // Add options to the selector dynamically
-    $.each(list_of_terms, function(key, value) {
-        $('#goSelector').append($('<option>', {
-            value: key.toLowerCase().replace(/:/g, '-'),
-            text: `${key}: ${value}`
-        }));
-    });
-
-    // Create a visible text input for autocomplete and a hidden input to store the selected ID
-    var $autocompleteInput = $('<input type="text" id="goSelectorInput">').insertBefore($goSelector);
-    var $hiddenInput = $('<input type="hidden" id="selectedGoTermId">').insertBefore($goSelector);
-
-    // Prepare the source data for autocomplete
-    var autocompleteSource = $.map(list_of_terms, function(description, id) {
-        return {
-            label: id + ': ' + description, // Display format
-            value: id.toLowerCase().replace(/:/g, '-') // Value to be used when an item is selected
-        };
-    });
-
-    // Initialize autocomplete on the new input
-    $autocompleteInput.autocomplete({
-        source: autocompleteSource,
-        minLength: 0, // Minimum number of characters to trigger autocomplete
-        select: function(event, ui) {
-            // Update the visible input with the full text (ID + description)
-            $autocompleteInput.val(ui.item.label);
-            // Update the hidden input with the selected ID
-            $hiddenInput.val(ui.item.value);
-            // Update the original select element with the selected GO term ID
-            $goSelector.val(ui.item.value);
-
-            // Prevent the widget from updating the input with the item.value
-            event.preventDefault();
-
-            // You might want to trigger any action that should happen on selecting an option, like form submission or data loading
-            // $('#loadDataBtn').click(); // Example: trigger the click event of the Load Data button
-        }
-    }).focus(function () {
-        // Show all options when the input gets focus
-        $(this).autocomplete("search", "");
-    });
-
-    // Custom rendering of autocomplete items (optional, for better display)
-    $autocompleteInput.autocomplete("instance")._renderItem = function(ul, item) {
-         // Escape special characters in the user's input to use in a regex
-         var userInput = $.ui.autocomplete.escapeRegex(this.term);
-         var t = item.label.replace(new RegExp("(" + userInput + ")", "gi"), "<strong>$1</strong>");
-         return $("<li>")
-            .append("<div>" + t + "</div>")
-            .appendTo(ul);
-    };
-
-     // Make each row clickable to toggle extra columns
+    // Make each row clickable to toggle extra columns
     $('#dataTable').on('click', 'tr', function() {
       $('#dataTable').DataTable(); // Redraw the table without resetting paging
     });
@@ -534,7 +684,7 @@ $(document).ready(function() {
         // Show diagramBox
         $('#diagramBox').show();
         // Get the selected GO term
-        const selectedGO = $('#goSelector').val();
+        const selectedGO = $('#goSelectedTermId').val();
         // Convert the selected GO term to the format used in the TSV file
         const goID = selectedGO.toUpperCase().replace(/-/g, ':')
         // Get the GO term name
@@ -545,6 +695,9 @@ $(document).ready(function() {
             alert('Please select a GO term!');
             return;
         }
+
+        // Load the GO term information
+        loadAmiGoInfo(goID);
 
         // Create the header with the GO term name and link
         const goHeader = `<h1>
@@ -583,131 +736,16 @@ $(document).ready(function() {
                     // Check if the clicked element is a count of a KOG group if not skip
                     if (svgTextId && svgTextId.startsWith('Count_')) {
                         // Get the KOG groups for the clicked count
-                        const kogGroups = getKogGroupsForCount(svgTextId);
-                        // Filter the DataTable based on the KOG groups
-                        filterDataTableForKogGroups(kogGroups);
+                        const kogGroups = getKogGroupsFromCountItem(svgTextId);
                         // Display the KOG header
                         const headerSpecies = displayKogHeader(svgTextId);
                         // Display the KOG groups
                         displayKogGroups(kogGroups, headerSpecies);
-                        // Show the details table
-                        showKogGroups(svgTextId, headerSpecies);
                     }
                 });
 
-                // Split the data into rows
-                const rows = data.split('\n');
-                let tableHead = `<thead>
-                                <tr>
-                                    <th>Group ID</th>
-                                    <th>Average H/M</th>
-                                    <th>Total H/M</th>
-                                    <th>Hit Proteins</th>
-                                    <th>Total Proteins</th>
-                                    <th>Hit Species</th>
-                                    <th>Total Species</th>
-                                    <th class="extra">A. thaliana Hit</th>
-                                    <th class="extra">C. elegans Hit</th>
-                                    <th class="extra">D. melanogaster Hit</th>
-                                    <th class="extra">D. rerio Hit</th>
-                                    <th class="extra">H. sapiens Hit</th>
-                                    <th class="extra">S. cerevisiae Hit</th>
-                                    <th class="extra">S. pombe Hit</th>
-                                    <th class="extra">A. thaliana Non-Hit</th>
-                                    <th class="extra">C. elegans Non-Hit</th>
-                                    <th class="extra">D. melanogaster Non-Hit</th>
-                                    <th class="extra">D. rerio Non-Hit</th>
-                                    <th class="extra">H. sapiens Non-Hit</th>
-                                    <th class="extra">S. cerevisiae Non-Hit</th>
-                                    <th class="extra">S. pombe Non-Hit</th>
-                                    <th>More</th>
-                                </tr>
-                                </thead>`;
-                
-                let tableHtml = tableHead;
-                tableHtml += "<tbody>";
-
-                $.each(rows, function(index, row) {
-                    // Skip the header row
-                    if (index === 0) return true;
-
-                    const columns = row.split('\t');
-                    // 7 initial columns + 14 extra columns, while flipping hit and non-hit columns
-                    if (columns.length > 6) { 
-                        tableHtml += `<tr>
-                                        <td class="lineKOGHeader"><a href="http://eggnog5.embl.de/#/app/results?target_nogs=${columns[0]}" target="_blank">${columns[0]}</a></td>
-                                        <td>${columns[1]}</td>
-                                        <td>${columns[2]}</td>
-                                        <td>${columns[3]}</td>
-                                        <td>${columns[4]}</td>
-                                        <td>${columns[5]}</td>
-                                        <td>${columns[6]}</td>
-                                        <td class="extra">${columns[14]}</td>
-                                        <td class="extra">${columns[15]}</td>
-                                        <td class="extra">${columns[16]}</td>
-                                        <td class="extra">${columns[17]}</td>
-                                        <td class="extra">${columns[18]}</td>
-                                        <td class="extra">${columns[19]}</td>
-                                        <td class="extra">${columns[20]}</td>
-                                        <td class="extra">${columns[7]}</td>
-                                        <td class="extra">${columns[8]}</td>
-                                        <td class="extra">${columns[9]}</td>
-                                        <td class="extra">${columns[10]}</td>
-                                        <td class="extra">${columns[11]}</td>
-                                        <td class="extra">${columns[12]}</td>
-                                        <td class="extra">${columns[13]}</td>
-                                        <td><span class="show-more">Show More</span></td>
-                                    </tr>`;
-                    }
-                });
-
-                tableHtml += "</tbody>";
-
-                // Copy the header to the footer
-                tableHtml += tableHead.replace('thead', 'tfoot');
-
-                $('#dataTable').html(tableHtml);
-                if ($.fn.dataTable.isDataTable('#dataTable')) {
-                    $('#dataTable').DataTable().destroy();
-                }
-                let dataTableVar = $('#dataTable').dataTable({
-                    "paging": true,
-                    "searching": true,
-                    "ordering": true,
-                    dom: 'Bfrtip',
-                    buttons: [
-                        {
-                            extend: 'csv',
-                            filename: 'go_tool_export', // Custom file name for CSV
-                            exportOptions: {
-                                columns: ':not(:last-child)' // Adjust selector as needed
-                            }
-                        },
-                        {
-                            extend: 'excelHtml5',
-                            title: 'GO_Tool_Export', // This sets the Excel file's sheet name
-                            filename: 'go_tool_export', // Custom file name for the Excel file
-                            exportOptions: {
-                                columns: ':not(:last-child)',
-                                format: {
-                                    header: function (data, columnIdx, node, config) {
-                                        // Check if the header ends with "Non-Hit" and replace it with "Total"
-                                        if (data.endsWith('Non-Hit')) {
-                                            return data.replace('Non-Hit', 'Total');
-                                        }
-                                        // Return the original data if no replacement is needed
-                                        return data; 
-                                    }
-                                }
-                            },
-                            customize: function(xlsx) {
-                                var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                                // Change the sheet name in the Excel file
-                                $('worksheet', sheet).attr('name', 'GO_Tool_Export');
-                            }
-                        }, 'print'
-                    ]
-                });
+                var tableHtml = getTableHtml(data);
+                var dataTableVar = displayDataTable(tableHtml);
 
             },
             error: function(error) {
@@ -794,6 +832,15 @@ $(document).ready(function() {
     // Hide diagramBox on page load
     $('#diagramBox').hide();
 
+    // Event listener for #checkboxGOInfo change #goTermInformation visibility
+    $("#checkboxGOInfo").change(function(){
+        if(this.checked) {
+          $("#goTermInformation").show();
+        } else {
+          $("#goTermInformation").hide();
+        }
+    });
+
     // Event listener for #checkboxVenn change #diagramBox visibility
     $("#checkboxVenn").change(function(){
         if(this.checked) {
@@ -801,15 +848,24 @@ $(document).ready(function() {
         } else {
           $("#diagramBox").hide();
         }
-      });
+    });
 
-    // Event listener for #checkboxVenn change #diagramBox visibility
+    // Event listener for #checkboxTable change #dataTable_wrapper visibility
     $("#checkboxTable").change(function(){
         if(this.checked) {
           $("#dataTable_wrapper").show();
         } else {
           $("#dataTable_wrapper").hide();
         }
-      });
+    });
+
+    // Event listener for #checkboxKOG change #detailsBox visibility
+    $("#checkboxKOG").change(function(){
+          if(this.checked) {
+            $("#detailsBox").show();
+          } else {
+            $("#detailsBox").hide();
+          }
+    });
 
 });
