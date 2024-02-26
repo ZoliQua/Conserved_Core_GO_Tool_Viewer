@@ -447,21 +447,27 @@ function reloadDataIntoDataTable(filteredData, OverlappedSpecies) {
         lines.forEach(row => {
             // Split row by tab to get columns
             const columns = row.split('\t');
-            // Construct newRow according to the specified order flip hit and non-hit.
+
+           // Construct newRow according to the specified order flip hit and non-hit.
             let newRow = [];
 
             // Columns 0-6 - First 7 columns
             for (let i = 0; i <= 6; i++) {
                 if (i === 0) { 
                     // First column with a link to KOG
-                    newRow.push(`<td><a href="http://eggnog5.embl.de/#/app/results?target_nogs=${columns[i]}" class='generalLink' target="_blank">${columns[i]}</a></td>`);
+                    newRow.push(`<td class="lineKOGHeader"><a href="http://eggnog5.embl.de/#/app/results?target_nogs=${columns[i]}" class='generalLink' target="_blank">${columns[i]}</a></td>`);
                 } else {
                     newRow.push(`<td>${columns[i]}</td>`);
                 }
             }
             // Columns 14-20
             for (let i = 14; i <= 20; i++) {
-                newRow.push(`<td class="extra" style="display:none;">${columns[i]}</td>`);
+                if(columns.length < 21 && (typeof columns[i] === 'undefined')) {
+                    newRow.push(`<td class="extra" style="display:none;"></td>`);
+                }
+                else {
+                    newRow.push(`<td class="extra" style="display:none;">${columns[i]}</td>`);
+                }                
             }
             // Columns 7-13
             for (let i = 7; i <= 13; i++) {
@@ -707,7 +713,7 @@ $(document).ready(function() {
         </h1>`;
 
         // Add the header to the DOM. Replace '#goHeaderContainer' with the ID of the container where you want to place the header
-        $('#goHeaderContainer').html(goHeader);
+        // $('#goHeaderContainer').html(goHeader);
 
         // Load the SVG file
         loadSvg(svgFile);
