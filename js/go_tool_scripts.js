@@ -142,7 +142,7 @@ function loadAmiGoInfo(goTerm) {
 
                 // Synonyms
                 goTermInfo2 = "";
-                if(result.synonyms.length > 0) {
+                if(result.synonyms && result.synonyms.length > 0) {
                     goTermInfo2 += "<h3 class='goTermInfoHeaders'>Synonyms</h3><ul>";
                     $.each(result.synonyms, function(index, synonym) {
                         goTermInfo2 += "<li>" + synonym.name + " (" + synonym.type + ")</li>";
@@ -152,10 +152,10 @@ function loadAmiGoInfo(goTerm) {
 
                 // Children
                 goTermInfo3 = "";
-                if(result.children.length > 0) {
+                if(result.children && result.children.length > 0) {
                     goTermInfo3 += "<h3 class='goTermInfoHeaders'>Children</h3><ul>";
                     $.each(result.children, function(index, child) {
-                        goTermInfo3 += "<li>" + child.id + " (" + child.relation + ")</li>";
+                        goTermInfo3 += "<li><a href='https://amigo.geneontology.org/amigo/term/" + child.id + "' class='generalLink' target='_blank'>" + child.id + "</a> (" + child.relation + ")</li>";
                     });
                     goTermInfo3 += "</ul>";
                 }

@@ -41,7 +41,7 @@ file_put_contents($filePath, $logString, FILE_APPEND);
 </head>
 <body>
     <div class="container">
-        <h1>Conserved Code GO Finder Tool</h1>
+        <h1>Conserved Core GO Finder Tool</h1>
 
         <div id="goTermBeforeHeader">
             Currently we are using data retreived in 2022.02 from the <a href="http://www.geneontology.org/" target="_blank">Gene Ontology</a> website.
