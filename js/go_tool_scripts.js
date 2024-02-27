@@ -3,7 +3,7 @@
 // Author: Zoltan Dul, Phd 2024
 
 // DataTable variable
-var dataTableVar
+var dataTable
 // Conatiner array for KOG group mapping
 let arrayKogGroupMapping = {};
 // Set the path to the SVG file (Venn Diagram)
@@ -483,7 +483,8 @@ function reloadDataIntoDataTable(filteredData, OverlappedSpecies) {
         });
 
         // Redraw the DataTable to apply changes after all rows have been added
-        dataTable.draw();
+        // dataTable.draw();
+        dataTable.order([1, 'desc']).draw();
     }
 }
 
@@ -542,7 +543,7 @@ function displayDataTable(tableHtml) {
     if ($.fn.dataTable.isDataTable('#dataTable')) {
         $('#dataTable').DataTable().destroy();
     }
-    let dataTableVar = $('#dataTable').dataTable({
+    let dataTable = $('#dataTable').dataTable({
         "paging": true,
         "searching": true,
         "ordering": [[1, 'desc']],
@@ -591,7 +592,10 @@ function displayDataTable(tableHtml) {
             }, 'print'
         ]
     });
-    return dataTableVar;
+
+    $('#dataTable').DataTable().order([1, 'desc']).draw();
+
+    return dataTable;
 }
 
 function getAllCombinations(elements) {
@@ -673,6 +677,11 @@ $('#closeDetailsTable').click(function() {
     $('#detailsTableWrapper').hide();
 });
 
+$('#closeGoTermInformation').click(function() {
+    $('#goTermInformation').hide();
+    $('#checkboxGOInfo').prop('checked', false);
+});
+
 $( "#detailsTableWrapper" ).draggable();
 
 $(document).ready(function() {
@@ -702,8 +711,12 @@ $(document).ready(function() {
             return;
         }
 
-        // Load the GO term information
+        // Load the GO term information from QuickGO
         loadAmiGoInfo(goID);
+        // Show the GO term information in #goTermInformation
+        $('#goTermInformation').show();
+        // Set #checkboxGOInfo checkbox to checked state
+        $('#checkboxGOInfo').prop('checked', true);
 
         // Create the header with the GO term name and link
         const goHeader = `<h1>
@@ -837,6 +850,8 @@ $(document).ready(function() {
 
     // Hide diagramBox on page load
     $('#diagramBox').hide();
+    // Hide goTermInforamtion on page load
+    $('#goTermInformation').hide();
 
     // Event listener for #checkboxGOInfo change #goTermInformation visibility
     $("#checkboxGOInfo").change(function(){

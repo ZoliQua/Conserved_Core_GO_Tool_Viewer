@@ -24,7 +24,7 @@ file_put_contents($filePath, $logString, FILE_APPEND);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Viewer</title>
+    <title>Conserved Core GO_Finder Tool</title>
     <link rel="stylesheet" type="text/css" href="media/css/go_tool_style.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
@@ -41,7 +41,7 @@ file_put_contents($filePath, $logString, FILE_APPEND);
 </head>
 <body>
     <div class="container">
-        <h1>Conserved Core GO Finder Tool</h1>
+        <h1>Conserved Core GO_Finder Tool</h1>
 
         <div id="goTermBeforeHeader">
             Currently we are using data retreived in 2022.02 from the <a href="http://www.geneontology.org/" target="_blank">Gene Ontology</a> website.
@@ -92,6 +92,7 @@ file_put_contents($filePath, $logString, FILE_APPEND);
             <div id="goTermInfo1"></div>
             <div id="goTermInfo2"></div>
             <div id="goTermInfo3"></div>
+            <button id="closeGoTermInformation">Close</button>
         </div>
 
         <div id="diagramBox">

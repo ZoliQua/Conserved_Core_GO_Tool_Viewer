@@ -148,7 +148,7 @@ label {
     margin: 0 auto; 
 }
 
-#closeDetailsTable{
+#closeDetailsTable, #closeGoTermInformation {
     background-color: #f44336; /* Red background */
     color: white; /* White text */
     border: none; /* No border */
@@ -189,6 +189,7 @@ label {
 #goTermInformation {
     display: flex;
     justify-content: space-between;
+    position: relative;
 }
 
 #goTermInfo1, #goTermInfo2, #goTermInfo3 {
