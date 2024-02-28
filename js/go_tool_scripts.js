@@ -174,6 +174,18 @@ function loadAmiGoInfo(goTerm) {
     });
 }
 
+function loadRequestFromString(inputProteins) {
+    var proteins = inputProteins.split(' ');
+
+    /* the actual API query */
+    getSTRING('https://string-db.org', {
+        'species': '9606',
+        'identifiers': proteins,
+        'network_flavor': 'confidence', 
+        'caller_identity': 'www.awesome_app.org'
+    });
+}
+
 function loadSvg(svgFile) {
     $.ajax({
         url: svgFile,
@@ -807,6 +819,7 @@ $(document).ready(function() {
             <tr>
                 <th>Species</th>
                 <th>Hit</th>
+                <th>Network Load</th>
                 <th>Non-Hit</th>
             </tr>
         `;
@@ -814,28 +827,37 @@ $(document).ready(function() {
 
         // Construct and append the new rows to the detailsTable
         for (let i = 0; i < headers.length; i++) {
+            // Start a new row
             let detailsRow = '<tr>';
+            // Display the species name
             detailsRow += `<td>${headers[i]}</td>`;
+
+            // Display the hit uniprot IDs and count
             let hitData = extraColumnsData[i];
             let hitArray = hitData.split(',');
             detailsRow += `<td>${convertToLinks(hitData)}</td>`;
-            let nonHitData = extraColumnsData[i + headers.length];
 
+            // Display the network load
+            if(hitArray.length > 0) detailsRow += `<td><button type="loadHitNetwork${i}">Load</button></td>`;
+            else detailsRow += `<td></td>`;
+
+            // Display the non-hit uniprot IDs and count
+            let nonHitData = extraColumnsData[i + headers.length];
             // Filter out the "Hit" results from the "Non-Hit" data
             let nonHitArray = nonHitData.split(',');
             nonHitArray = nonHitArray.filter(item => !hitArray.includes(item));
             nonHitData = nonHitArray.length > 0 ? nonHitArray.join(',') : '0';
-            
-            if(nonHitData == 0) {
-                detailsRow += `<td>${nonHitData}</td>`;
-            }
-            else {
-                detailsRow += `<td>${convertToLinks(nonHitData)}</td>`;
-            }
-            
+            // Display zero as a number, not a link to avoid confusion
+            if(nonHitData == 0) detailsRow += `<td>${nonHitData}</td>`;
+            else detailsRow += `<td>${convertToLinks(nonHitData)}</td>`;
+
+            // End the row
             detailsRow += '</tr>';
             $('#detailsTable').append(detailsRow);
         }
+
+         // Call the function on page load
+        loadRequestFromString();
 
         // Display the detailsTable
         $('#detailsTable').show();
@@ -855,38 +877,26 @@ $(document).ready(function() {
 
     // Event listener for #checkboxGOInfo change #goTermInformation visibility
     $("#checkboxGOInfo").change(function(){
-        if(this.checked) {
-          $("#goTermInformation").show();
-        } else {
-          $("#goTermInformation").hide();
-        }
+        if(this.checked) $("#goTermInformation").show();
+        else $("#goTermInformation").hide();
     });
 
     // Event listener for #checkboxVenn change #diagramBox visibility
     $("#checkboxVenn").change(function(){
-        if(this.checked) {
-          $("#diagramBox").show();
-        } else {
-          $("#diagramBox").hide();
-        }
+        if(this.checked) $("#diagramBox").show();
+        else $("#diagramBox").hide();
     });
 
     // Event listener for #checkboxTable change #dataTable_wrapper visibility
     $("#checkboxTable").change(function(){
-        if(this.checked) {
-          $("#dataTable_wrapper").show();
-        } else {
-          $("#dataTable_wrapper").hide();
-        }
+        if(this.checked) $("#dataTable_wrapper").show();
+        else $("#dataTable_wrapper").hide();
     });
 
     // Event listener for #checkboxKOG change #detailsBox visibility
     $("#checkboxKOG").change(function(){
-          if(this.checked) {
-            $("#detailsBox").show();
-          } else {
-            $("#detailsBox").hide();
-          }
+        if(this.checked) $("#detailsBox").show();
+        else $("#detailsBox").hide();
     });
 
 });

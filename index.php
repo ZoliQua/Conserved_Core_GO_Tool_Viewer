@@ -38,6 +38,7 @@ file_put_contents($filePath, $logString, FILE_APPEND);
     <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://string-db.org/javascript/combined_embedded_network_v2.0.4.js"></script>
 </head>
 <body>
     <div class="container">
@@ -113,6 +114,7 @@ file_put_contents($filePath, $logString, FILE_APPEND);
 
         <div id="detailsTableWrapper">
             <button id="closeDetailsTable">Close</button>
+            <div id="stringEmbedded"></div>
             <h3 id="detailsTableHeaderText">Details:</h3> 
             <table id="detailsTable">
                 <!-- Details Table Content -->
