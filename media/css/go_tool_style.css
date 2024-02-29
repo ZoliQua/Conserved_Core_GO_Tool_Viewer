@@ -211,8 +211,8 @@ label {
     position: fixed; /* Fixed position ensures the table stays at the same place even if you scroll */
     top: 10%; /* Adjust these values to position the table */
     left: 10%;
-    width: 50%; /* Set width and height as required */
-    height: 50%;
+    width: 60%; /* Set width and height as required */
+    height: 60%;
     overflow-y: scroll; /* If your table contents are longer than its height, this allows for scrolling */
     background-color: #DDDDDD; /* Ensure the table is visible over other content */
     border: 4px solid #AAAAAA; /* A simple border for visual separation */

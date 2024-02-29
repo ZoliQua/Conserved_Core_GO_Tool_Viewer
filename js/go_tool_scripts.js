@@ -20,6 +20,17 @@ const columnNames = {
     "NameG": "S. pombe"
 };
 
+// Taxon Dictionary
+const taxonDict = {
+    'H. sapiens': '9606',
+    'D. rerio': '7955',
+    'C. elegans': '6239',
+    'A. thaliana': '3702',
+    'D. melanogaster': '7227',
+    'S. pombe': '4896',
+    'S. cerevisiae': '4932'
+};
+
 // List of terms that currently have a TSV file
 const list_of_terms = {
     'GO:1901135': 'carbohydrate derivative metabolic process',
@@ -174,15 +185,16 @@ function loadAmiGoInfo(goTerm) {
     });
 }
 
-function loadRequestFromString(inputProteins) {
+function loadRequestFromString(SpeciesName, inputProteins) {
+    var taxonID = taxonDict[SpeciesName];
     var proteins = inputProteins.split(' ');
 
     /* the actual API query */
     getSTRING('https://string-db.org', {
-        'species': '9606',
+        'species': taxonID,
         'identifiers': proteins,
         'network_flavor': 'confidence', 
-        'caller_identity': 'www.awesome_app.org'
+        'caller_identity': 'dulzoltan.hu'
     });
 }
 
@@ -694,7 +706,7 @@ $('#closeGoTermInformation').click(function() {
     $('#checkboxGOInfo').prop('checked', false);
 });
 
-$( "#detailsTableWrapper" ).draggable();
+//$( "#detailsTableWrapper" ).draggable();
 
 $(document).ready(function() {
 
@@ -794,8 +806,9 @@ $(document).ready(function() {
         // Find the parent row of the clicked "Show More" element
         const parentRow = $(this).closest('tr');
 
-        // Clear the detailsTable
+        // Clear the detailsTable and stringEmbedded
         $('#detailsTable').empty();
+        $('#stringEmbedded').empty();
 
         // Extract the 14 extra columns data from the parent row
         const extraColumnsData = parentRow.find('.extra').map(function() {
@@ -838,7 +851,11 @@ $(document).ready(function() {
             detailsRow += `<td>${convertToLinks(hitData)}</td>`;
 
             // Display the network load
-            if(hitArray.length > 0) detailsRow += `<td><button type="loadHitNetwork${i}">Load</button></td>`;
+            if(hitArray.length >= 1 && hitArray[0] != 0) {
+                var buttonname = "loadHitNetwork" + i;
+                detailsRow += `<td><button type="` + buttonname + `" onclick='javascript:loadRequestFromString("${headers[i]}", "`+hitArray.join(' ')+`");'>Load</button></td>`;
+                // $(buttonname).click(loadRequestFromString(hitArray.join(' ')));
+            }
             else detailsRow += `<td></td>`;
 
             // Display the non-hit uniprot IDs and count
@@ -856,8 +873,8 @@ $(document).ready(function() {
             $('#detailsTable').append(detailsRow);
         }
 
-         // Call the function on page load
-        loadRequestFromString();
+        // Call the function on page load
+        // loadRequestFromString();
 
         // Display the detailsTable
         $('#detailsTable').show();
