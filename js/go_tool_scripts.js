@@ -189,6 +189,11 @@ function loadRequestFromString(SpeciesName, inputProteins) {
     var taxonID = taxonDict[SpeciesName];
     var proteins = inputProteins.split(' ');
 
+    $("#closeStringNetworkDetailsTable").show();
+    $("#closeStringNetworkDetailsTable").addClass('btnStyleRed');
+    $("#stringEmbedded").show();
+    $("#stringEmbedded").html("<p>Loading STRING network...</p>");
+
     /* the actual API query */
     getSTRING('https://string-db.org', {
         'species': taxonID,
@@ -706,8 +711,6 @@ $('#closeGoTermInformation').click(function() {
     $('#checkboxGOInfo').prop('checked', false);
 });
 
-//$( "#detailsTableWrapper" ).draggable();
-
 $(document).ready(function() {
 
     // Initialize the autocomplete for GO input box
@@ -797,8 +800,32 @@ $(document).ready(function() {
         });
     });
 
+    $('#closeStringNetworkDetailsTable').click(function() {
+        // Cache the button for efficiency
+        var $this = $(this);
+
+        if ($this.html() === "Close Network") {
+            // Change button text to "Show Network"
+            $this.html("Show Network");
+            // Hide STRING network
+            $('#stringEmbedded').hide();
+            // Change to green style
+            $this.removeClass('btnStyleRed').addClass('btnStyleGreen');
+        } else {
+            // Change button text to "Close Network"
+            $this.html("Close Network");
+            // Show STRING network
+            $('#stringEmbedded').show();
+            // Change back to red style
+            $this.removeClass('btnStyleGreen').addClass('btnStyleRed'); 
+        }
+
+    });
+
     // Hide the detailsTable on page load
     $('#detailsTable').hide();
+    // Hide the closeStringNetworkDetailsTable button on page load
+    $("#closeStringNetworkDetailsTable").hide();
 
     // When a row in the main table is clicked on show more details
     $('#dataTable').on('click', '.show-more', function() {
@@ -873,13 +900,14 @@ $(document).ready(function() {
             $('#detailsTable').append(detailsRow);
         }
 
-        // Call the function on page load
-        // loadRequestFromString();
-
         // Display the detailsTable
         $('#detailsTable').show();
-        $('#detailsTableWrapper').show();
+        $('#detailsTableAndButtonWrapper').show();
     });
+
+    $( "#detailsTableAndButtonWrapper" ).draggable({
+        handle: "h4"
+    }).resizable();
 
     // Event listener for the hitSelector dropdown change
     $('#hitSelector').change(function() {

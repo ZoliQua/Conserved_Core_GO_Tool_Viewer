@@ -112,13 +112,20 @@ file_put_contents($filePath, $logString, FILE_APPEND);
             <!-- Data will be loaded here using jQuery -->
         </table>
 
-        <div id="detailsTableWrapper">
-            <button id="closeDetailsTable">Close</button>
-            <div id="stringEmbedded"></div>
-            <h3 id="detailsTableHeaderText">Details:</h3> 
-            <table id="detailsTable">
-                <!-- Details Table Content -->
-            </table>
+
+        <div id="detailsTableAndButtonWrapper">
+            <div id="detailsTableWrapper">
+                <button id="closeStringNetworkDetailsTable">Close Network</button>
+                <button id="closeDetailsTable">Close</button>
+                <h3 id="detailsTableHeaderText">Details:</h3>
+                <div id="detailsTableWrapperInside">
+                    <div id="stringEmbedded"></div>
+                    <table id="detailsTable">
+                        <!-- Details Table Content -->
+                    </table>
+                </div>
+            </div>
+            <h4 id="dragDetailsTableButton">« Move »</h4>
         </div>
     </div>
 
