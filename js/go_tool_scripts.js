@@ -702,8 +702,8 @@ function autocompleteGOInputBox() {
     };
 }
 
-$('#closeDetailsTable').click(function() {
-    $('#detailsTableWrapper').hide();
+$('#closeDetailsTableContainerContainer').click(function() {
+    $('#detailsTableContainer').hide();
 });
 
 $('#closeGoTermInformation').click(function() {
@@ -902,10 +902,10 @@ $(document).ready(function() {
 
         // Display the detailsTable
         $('#detailsTable').show();
-        $('#detailsTableAndButtonWrapper').show();
+        $('#detailsTableContainer').show();
     });
 
-    $( "#detailsTableAndButtonWrapper" ).draggable({
+    $( "#detailsTableContainer" ).draggable({
         handle: "h4"
     }).resizable();
 

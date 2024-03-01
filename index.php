@@ -113,19 +113,21 @@ file_put_contents($filePath, $logString, FILE_APPEND);
         </table>
 
 
-        <div id="detailsTableAndButtonWrapper">
-            <div id="detailsTableWrapper">
+        <div id="detailsTableContainer">
+            <div id="detailsTableHeaderWrapper">
                 <button id="closeStringNetworkDetailsTable">Close Network</button>
-                <button id="closeDetailsTable">Close</button>
+                <button id="closeDetailsTableContainer">Close</button>
                 <h3 id="detailsTableHeaderText">Details:</h3>
-                <div id="detailsTableWrapperInside">
-                    <div id="stringEmbedded"></div>
-                    <table id="detailsTable">
-                        <!-- Details Table Content -->
-                    </table>
-                </div>
             </div>
-            <h4 id="dragDetailsTableButton">« Move »</h4>
+            <div id="detailsTableWrapper">
+                <div id="stringEmbedded"></div>
+                <table id="detailsTable">
+                    <!-- Details Table Content -->
+                </table>
+            </div>
+            <div id="detailsTableFooterWrapper">
+                <h4 id="dragDetailsTableButton">« Move »</h4>
+            </div>
         </div>
     </div>
 
