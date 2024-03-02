@@ -702,8 +702,11 @@ function autocompleteGOInputBox() {
     };
 }
 
-$('#closeDetailsTableContainerContainer').click(function() {
+$('#closeDetailsTableContainer').click(function() {
+    // Hide the detailsTableContainer
     $('#detailsTableContainer').hide();
+    // Clear the STRING network to avoid confusion wit SVG text properties
+    $('#stringEmbedded').empty();
 });
 
 $('#closeGoTermInformation').click(function() {
@@ -751,9 +754,6 @@ $(document).ready(function() {
                 ${goID} - ${goName} 
             </a>
         </h1>`;
-
-        // Add the header to the DOM. Replace '#goHeaderContainer' with the ID of the container where you want to place the header
-        // $('#goHeaderContainer').html(goHeader);
 
         // Load the SVG file
         loadSvg(svgFile);
