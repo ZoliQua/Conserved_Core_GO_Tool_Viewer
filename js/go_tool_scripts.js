@@ -702,19 +702,11 @@ function autocompleteGOInputBox() {
     };
 }
 
-$('#closeDetailsTableContainer').click(function() {
-    // Hide the detailsTableContainer
-    $('#detailsTableContainer').hide();
-    // Clear the STRING network to avoid confusion wit SVG text properties
-    $('#stringEmbedded').empty();
-});
-
-$('#closeGoTermInformation').click(function() {
-    $('#goTermInformation').hide();
-    $('#checkboxGOInfo').prop('checked', false);
-});
 
 $(document).ready(function() {
+
+    // Hide the loading screen
+    $('#loadingScreen').hide();
 
     // Initialize the autocomplete for GO input box
     autocompleteGOInputBox()
@@ -726,8 +718,6 @@ $(document).ready(function() {
 
     // Event listener for button click
     $('#loadDataBtn').click(function() {
-        // Show diagramBox
-        $('#diagramBox').show();
         // Get the selected GO term
         const selectedGO = $('#goSelectedTermId').val();
         // Convert the selected GO term to the format used in the TSV file
@@ -743,10 +733,14 @@ $(document).ready(function() {
 
         // Load the GO term information from QuickGO
         loadAmiGoInfo(goID);
+        // Show diagramBox and Venn diagram
+        if ($('#checkboxVenn').is(':checked')) $('#diagramBox').show();
         // Show the GO term information in #goTermInformation
-        $('#goTermInformation').show();
-        // Set #checkboxGOInfo checkbox to checked state
-        $('#checkboxGOInfo').prop('checked', true);
+        if ($('#checkboxGOInfo').is(':checked')) $('#goTermInformation').show();
+        // Show the DataTable
+        if ($('#checkboxTable').is(':checked')) $('#dataTableContainer').show();
+        // Show the Footer
+        $('#footer').show();
 
         // Create the header with the GO term name and link
         const goHeader = `<h1>
@@ -821,11 +815,6 @@ $(document).ready(function() {
         }
 
     });
-
-    // Hide the detailsTable on page load
-    $('#detailsTable').hide();
-    // Hide the closeStringNetworkDetailsTable button on page load
-    $("#closeStringNetworkDetailsTable").hide();
 
     // When a row in the main table is clicked on show more details
     $('#dataTable').on('click', '.show-more', function() {
@@ -913,12 +902,28 @@ $(document).ready(function() {
     $('#hitSelector').change(function() {
         // Trigger the data loading and overlap calculation process here
         $('#loadDataBtn').click();
-    });
+    });    
 
+    // ==========================
+    // Hide on page load section
+    // ==========================
+
+    // Hide the detailsTable on page load
+    $('#detailsTable').hide();
+    // Hide the closeStringNetworkDetailsTable button on page load
+    $("#closeStringNetworkDetailsTable").hide();
     // Hide diagramBox on page load
     $('#diagramBox').hide();
     // Hide goTermInforamtion on page load
     $('#goTermInformation').hide();
+    // Hide #dataTableContaineron page load
+    $('#dataTableContainer').hide();
+    // Hide footer on page load
+    $('#footer').hide();
+
+    // ==========================
+    // Checkbox Listeners section
+    // ==========================
 
     // Event listener for #checkboxGOInfo change #goTermInformation visibility
     $("#checkboxGOInfo").change(function(){
@@ -928,20 +933,57 @@ $(document).ready(function() {
 
     // Event listener for #checkboxVenn change #diagramBox visibility
     $("#checkboxVenn").change(function(){
-        if(this.checked) $("#diagramBox").show();
-        else $("#diagramBox").hide();
-    });
+        if(this.checked) {
+            $("#diagramBox").show();
+        }
+        else {
+            $("#diagramBox").hide();
+            $("#detailsBox").hide();
+            $("#checkboxKOG").prop('checked', false);}
+    }); 
 
     // Event listener for #checkboxTable change #dataTable_wrapper visibility
     $("#checkboxTable").change(function(){
-        if(this.checked) $("#dataTable_wrapper").show();
-        else $("#dataTable_wrapper").hide();
+        if(this.checked) $("#dataTableContainer").show();
+        else $("#dataTableContainer").hide();
     });
 
     // Event listener for #checkboxKOG change #detailsBox visibility
     $("#checkboxKOG").change(function(){
         if(this.checked) $("#detailsBox").show();
         else $("#detailsBox").hide();
+    });
+
+    // ==========================
+    // Close Button Listeners section
+    // ==========================
+
+    // Event listener for #closeDetailsTableContainer click - Close detailsTable
+    $('#closeDetailsTableContainer').click(function() {
+        // Hide the detailsTableContainer
+        $('#detailsTableContainer').hide();
+        // Clear the STRING network to avoid confusion wit SVG text properties
+        $('#stringEmbedded').empty();
+    });
+    
+    // Event listener for #closeGoTermInformation click - Close goTermInformation Box
+    $('#closeGoTermInformation').click(function() {
+        $('#goTermInformation').hide();
+        $('#checkboxGOInfo').prop('checked', false);
+    });
+    
+    // Event listener for #closeDiagramBox click - Close Venn Diagram Box
+    $('#closeDiagramBox').click(function() {
+        $("#diagramBox").hide();
+        $("#detailsBox").hide();
+        $('#checkboxVenn').prop('checked', false);
+        $('#checkboxKOG').prop('checked', false);
+    });
+    
+    // Event listener for #closeDataTable click - Close DataTable
+    $('#closeDataTable').click(function() {
+        $("#dataTableContainer").hide();
+        $('#checkboxTable').prop('checked', false);
     });
 
 });

@@ -24,7 +24,7 @@ file_put_contents($filePath, $logString, FILE_APPEND);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conserved Core GO_Finder Tool</title>
+    <title>Conserved Core Finder GO_Tool</title>
     <link rel="stylesheet" type="text/css" href="media/css/go_tool_style.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
@@ -41,11 +41,34 @@ file_put_contents($filePath, $logString, FILE_APPEND);
     <script type="text/javascript" charset="utf8" src="https://string-db.org/javascript/combined_embedded_network_v2.0.4.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Conserved Core GO_Finder Tool</h1>
+    <div class="containerMain">
+        <div id="header">
+            <div id="headerContent">
+                <div id="headerContentLeft">
+                    <!-- Logo image added via CSS -->
+                </div>
+                <div id="headerContentRight">
+                    <div id="headerContentRightTop">
+                        <h1>Conserved Core Finder GO_Tool</h1>
+                    </div>
+                    <div id="headerContentRightBottom">
+                        <a href="index.php" class="headerLinks">Home</a>
+                        <a href="index.php" class="headerLinks">Data Sources</a>
+                        <a href="index.php" class="headerLinks">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div id="goTermBeforeHeader">
             Currently we are using data retreived in 2022.02 from the <a href="http://www.geneontology.org/" target="_blank">Gene Ontology</a> website.
+        </div>
+
+        <div id="loadingScreen">
+            <div id="loadingScreenContent">
+                <h1>Loading...</h1>
+                <div id="loadingScreenContentText">Please wait while the data is being loaded.</div>
+            </div>
         </div>
 
         <div id="goTermRequest">
@@ -57,7 +80,7 @@ file_put_contents($filePath, $logString, FILE_APPEND);
                     <option value="hit">hit Proteins</option>
                     <option value="total">total Proteins</option>
                 </select>
-                <button id="loadDataBtn">Load Data</button>
+                <button id="loadDataBtn">Load GO Term</button>
             </div>
             <div id="goTermRequestSettings">
 
@@ -99,6 +122,7 @@ file_put_contents($filePath, $logString, FILE_APPEND);
         <div id="diagramBox">
             <div id="diagramDetailContainer">
                 <div id="diagramContainer"></div>
+                <button id="closeDiagramBox">Close</button>
                 <div id="detailsBox">
                     <div id="detailsHeaderBox">Listed KOG Groups</div>
                     <div id="detailsContentBox">
@@ -108,10 +132,14 @@ file_put_contents($filePath, $logString, FILE_APPEND);
             </div>
         </div>       
 
-        <table id="dataTable">
-            <!-- Data will be loaded here using jQuery -->
-        </table>
-
+        <div id="dataTableContainer">
+            <div id="dataTableBox">
+                <table id="dataTable">
+                    <!-- Data will be loaded here using jQuery -->
+                </table>
+            </div>
+            <button id="closeDataTable">Close</button>
+        </div>
 
         <div id="detailsTableContainer">
             <div id="detailsTableHeaderWrapper">
@@ -129,7 +157,12 @@ file_put_contents($filePath, $logString, FILE_APPEND);
                 <h4 id="dragDetailsTableButton">« Move »</h4>
             </div>
         </div>
+
+        <div id="footer"> King's College London & Fondazione Edmund Mach - 2024
+        </div>
+
     </div>
+
 
     <script src="js/go_tool_scripts.js"></script>
 

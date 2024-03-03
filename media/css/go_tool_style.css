@@ -49,6 +49,7 @@ th, td {
 
 label {
     vertical-align: middle;
+    padding: 0px 5px;
 }
 
 a, a.generalLink {
@@ -85,33 +86,137 @@ a:visited, a.generalLink:visited {
 
 
 /* ============================ */
+/* == Design for MAIN and LOADING stuff == */
+/* ============================ */
+
+
+.containerMain {
+    max-width: 70%;
+    margin: 0 auto;
+}
+
+#loadingScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background-color: #f0f0f0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#loadingScreenContentText {
+    color: #AAAAAA;
+    text-align: center;
+    align-items: center;
+    font-size: 18px;
+    font-style: italic;
+}
+
+
+/* ============================ */
 /* == Design for HEADER stuff == */
 /* ============================ */
 
 
-.container {
-    max-width: 800px;
-    margin: 0 auto;
+#headerContent {
+    height: 160px; /* Set height as required */
+    display: flex; /* Use flex display */
+    justify-content: space-between; /* Space between left and right content */
+    align-items: center; /* Center items vertically */
+    width: 100%; /* Set width as required */
+    background: #02354d;
+    color: #FFFFFF; /* White text */
+    font-size: 24px; /* Text size */
+    font-weight: bold; /* Bold text */
+    margin: 0; /* Margin */
+    border-radius: 47px 14px 47px 14px;
+    padding: 0px 17px; /* Padding left */
+}
+
+#headerContentLeft {
+    display: flex; /* Use flex display */
+    height: 140px; /* Set height as required */
+    background: url("../images/go_tool_logo.png") no-repeat;
+    background-size: contain; /* Ensure the image fits the div */    
+    flex: 1; /* Flex grow */
+    text-align: left; /* Align text to the left */
+}
+
+#headerContentRight {
+    display: flex; /* Use flex display */
+    flex-direction: column; /* Stack children vertically */
+    flex: 1; /* Flex grow */
+    text-align: right; /* Align text to the right */
+}
+
+.headerLinks, .headerLinks a {
+    background-color: #1477c7;
+    color: white; /* White text */
+    border: 2px solid #181f25; /* Border color */
+    border-radius: 15px; /* Rounded corners */
+    cursor: pointer; /* Cursor style */
+    padding: 10px 16px; /* Padding */
+    text-align: center; /* Centered text */
+    text-decoration: none; /* No underline */
+    font-size: 16px; /* Text size */
+    z-index: 101; /* Ensure button is above the container's content */
+    transition: background-color 0.4s;
+}
+
+
+.headerLinks:hover {
+    background-color: #105892;
+    color: rgb(179, 175, 175); /* White text */
+    text-decoration: none; /* No underline */
+    transition: background-color 0.4s;
+}
+
+#headerContentRightTop {
+    /* If you need specific styles for the top part, add them here */
+}
+
+#headerContentRightBottom {
+    /* If you need specific styles for the bottom part, add them here */
+    margin-top: auto; /* Push to the bottom */
+}
+
+#footer {
+    margin-top: 10px;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    background-color: #02354d;
+    color: #FFFFFF; /* White text */
+    text-align: center; /* Centered text */
+    line-height: 40px; /* Centered vertically */
+    font-size: 16px; /* Text size */
+    font-weight: bold; /* Bold text */
+    border-radius: 47px 14px 47px 14px;
 }
 
 #loadDataBtn {
-    background-color: #007BFF;
+    background-color: #1477c7;
     color: white;
     padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 15px;
     cursor: pointer;
     transition: background-color 0.4s;
 }
 
 #loadDataBtn:hover {
-    background-color: #1477c7;
+    background-color: #1766a7;
 }
 
 #goSelector, #hitSelector, #goSelectorInput {
     padding: 5px 10px;
-    margin: 10px 0;
-    border-radius: 5px;
+    margin: 10px 5px;
+    height: 38px;
+    border: 2px solid #1477c7;
+    border-radius: 15px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -157,6 +262,36 @@ a:visited, a.generalLink:visited {
 #goHeaderContainer {
     margin-top: 10px;
     font-size: 16px;
+}
+
+/* ============================ */
+/* == Design for DIAGRAM stuff == */
+/* ============================ */
+
+#diagramBox {
+    display: flex;
+}
+
+#closeDiagramBox {
+    background-color: #f44336; /* Red background */
+    color: white; /* White text */
+    position: relative;
+    height: 40px;
+    border: none; /* No border */
+    border-radius: 15px; /* Rounded corners */
+    cursor: pointer; /* Cursor style */
+    padding: 8px 14px; /* Padding */
+    text-align: center; /* Centered text */
+    text-decoration: none; /* No underline */
+    display: inline-block; /* Inline-block */
+    font-size: 16px; /* Text size */
+    margin: 4px 2px; /* Margin */
+    transition-duration: 0.4s; /* Transition effect */
+    left: -78px; /* Position from the left */
+}
+
+#closeDiagramBox:hover {
+    background-color: #f97a71; /* Red background */
 }
 
 #diagramDetailContainer {
@@ -208,6 +343,39 @@ svg text.count:hover {
 /* ============================ */
 /* Design for DataTable table */
 /* ============================ */
+
+#dataTableContainer {
+    position: relative; /* Set position to relative for child absolute positioning */
+    width: 100%;
+    border: 3px solid #ccc;
+    border-radius: 30px;
+    padding: 15px;
+    background: #eeeeee;
+    margin-top: 10px;
+}
+
+#dataTableBox {
+    width: 100%; /* Ensure it takes full width */
+}
+
+#closeDataTable {
+    position: absolute; /* Position it absolutely within the container */
+    top: 10px; /* 10px from the top */
+    right: 10px; /* 10px from the right */
+    background-color: #f44336;
+    color: white;
+    height: 40px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    padding: 8px 14px;
+    font-size: 16px;
+    transition-duration: 0.4s;
+}
+
+#closeDataTable:hover {
+    background-color: #f97a71; /* Red background */
+}
 
 .dataTables_wrapper {
     max-width: 800px;
