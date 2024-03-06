@@ -119,7 +119,7 @@ include("log.php");
         <div id="dataTableContainer">
             <div id="dataTableBox">
                 <table id="dataTable">
-                    <!-- Data will be loaded here using jQuery -->
+                    <!-- eggNOG groups will be loaded here using jQuery -->
                 </table>
             </div>
             <button id="closeDataTable">Close</button>
@@ -146,7 +146,6 @@ include("log.php");
         </div>
 
     </div>
-
 
     <script src="js/go_tool_scripts.js"></script>
 
