@@ -7,7 +7,7 @@ var dataTable
 // Conatiner array for KOG group mapping
 let arrayKogGroupMapping = {};
 // Set the path to the SVG file (Venn Diagram)
-const svgFile = "data/ortholog_venn_7f.svg";
+const svgFile = "data/ortholog_venn_7e.svg";
 
 // List of the names of species to show in the SVG
 const columnNames = {
@@ -143,7 +143,7 @@ function loadAmiGoInfo(goTerm) {
         dataType: "json",
         success: function(data) {
             if(data.numberOfHits > 0) {
-                // Assuming we are interested in the first result
+                // Assuming we are interested in the first result as GO Term information
                 var result = data.results[0]; 
                 var goTermInfo1 = "<h3 class='goTermInfoHeaders'>GO Term Information</h3>";
                 goTermInfo1 += "<p><strong>Id:</strong> " + result.id + "</p>";
@@ -151,7 +151,7 @@ function loadAmiGoInfo(goTerm) {
                 goTermInfo1 += "<p><strong>Link to AmiGO:</strong> <a href='https://amigo.geneontology.org/amigo/term/" + goTerm + "' class='generalLink' target='_blank'>" + result.id + "</a></p>";
                 goTermInfo1 += "<p><strong>Definition:</strong> " + result.definition.text + "</p>";
 
-                // Synonyms
+                // Second result is the "Synonyms"
                 goTermInfo2 = "";
                 if(result.synonyms && result.synonyms.length > 0) {
                     goTermInfo2 += "<h3 class='goTermInfoHeaders'>Synonyms</h3><ul>";
@@ -161,10 +161,10 @@ function loadAmiGoInfo(goTerm) {
                     goTermInfo2 += "</ul>";
                 }
 
-                // Children
+                // Third result is the "Child Terms"
                 goTermInfo3 = "";
                 if(result.children && result.children.length > 0) {
-                    goTermInfo3 += "<h3 class='goTermInfoHeaders'>Children</h3><ul>";
+                    goTermInfo3 += "<h3 class='goTermInfoHeaders'>Child Terms</h3><ul>";
                     $.each(result.children, function(index, child) {
                         goTermInfo3 += "<li><a href='https://amigo.geneontology.org/amigo/term/" + child.id + "' class='generalLink' target='_blank'>" + child.id + "</a> (" + child.relation + ")</li>";
                     });
