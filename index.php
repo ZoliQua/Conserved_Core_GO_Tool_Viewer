@@ -60,6 +60,12 @@ include("log.php");
                 <label for="goSelector">GO Term: </label>
                 <input type="text" id="goSelectorInput">
                 <input type="hidden" id="goSelectedTermId">
+
+                <select id="yearSelector">
+                    <option value="2022">2022</option>
+                    <option value="2024">2024</option>
+                </select>
+
                 <select id="hitSelector">
                     <option value="hit">hit Proteins</option>
                     <option value="total">total Proteins</option>

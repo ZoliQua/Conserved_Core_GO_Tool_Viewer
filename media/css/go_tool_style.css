@@ -211,7 +211,7 @@ a:visited, a.generalLink:visited {
     background-color: #1766a7;
 }
 
-#goSelector, #hitSelector, #goSelectorInput {
+#goSelector, #hitSelector, #yearSelector, #goSelectorInput {
     padding: 5px 10px;
     margin: 10px 5px;
     height: 38px;
