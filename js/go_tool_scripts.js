@@ -898,6 +898,13 @@ $(document).ready(function() {
         handle: "h4"
     }).resizable();
 
+    // Event listener for the yearSelector dropdown change
+    $('#yearSelector').change(function() {
+        
+        // Trigger the data loading and overlap calculation process here
+        $('#loadDataBtn').click();
+    }); 
+
     // Event listener for the hitSelector dropdown change
     $('#hitSelector').change(function() {
         // Trigger the data loading and overlap calculation process here
