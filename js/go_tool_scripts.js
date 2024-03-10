@@ -900,7 +900,13 @@ $(document).ready(function() {
 
     // Event listener for the yearSelector dropdown change
     $('#yearSelector').change(function() {
-        
+        // Update the GO term information based on the selected year
+        if($('#yearSelector').val() == "2022") {
+            $('#goTermBeforeHeader').html("Currently we are using GO data retreived in 2022.02 from the <a href=\"http://www.geneontology.org/\" target=\"_blank\">Gene Ontology</a> website, with <a href=\"http://eggnog5.embl.de/#/app/home\" target=\"_blank\">eggNOG v5.0</a> database.");
+        }
+        else if($('#yearSelector').val() == "2024") {
+            $('#goTermBeforeHeader').html("Currently we are using GO data retreived in 2024.02 from the <a href=\"http://www.geneontology.org/\" target=\"_blank\">Gene Ontology</a> website, with <a href=\"http://eggnog6.embl.de/#/app/home\" target=\"_blank\">eggNOG v6.0</a> database.");
+        }
         // Trigger the data loading and overlap calculation process here
         $('#loadDataBtn').click();
     }); 
