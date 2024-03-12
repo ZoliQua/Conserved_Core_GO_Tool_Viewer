@@ -120,6 +120,21 @@ const list_of_terms = {
     'GO:0009295': 'nucleoid'
     };
 
+const list_of_terms_2024  = {
+
+    'GO:0007049': 'cell cycle',
+    'GO:0000902': 'cell morphogenesis',
+    'GO:0006259': 'DNA metabolic process',
+    'GO:0008361': 'regulation of cell size',
+    'GO:0051726': 'regulation of cell cycle',
+    'GO:0051301': 'cell division',
+    'GO:0006412': 'translation',
+    'GO:0006099': 'tricarboxylic acid cycle',
+    'GO:0000502': 'proteasome complex',
+    'GO:0009295': 'nucleoid'
+
+};
+
 function convertToLinks(cellData) {
     const uniprots = cellData.split(",");
     
