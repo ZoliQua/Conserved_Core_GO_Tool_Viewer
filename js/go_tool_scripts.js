@@ -121,7 +121,6 @@ const list_of_terms = {
     };
 
 const list_of_terms_2024  = {
-
     'GO:0007049': 'cell cycle',
     'GO:0000902': 'cell morphogenesis',
     'GO:0006259': 'DNA metabolic process',
@@ -132,7 +131,6 @@ const list_of_terms_2024  = {
     'GO:0006099': 'tricarboxylic acid cycle',
     'GO:0000502': 'proteasome complex',
     'GO:0009295': 'nucleoid'
-
 };
 
 function convertToLinks(cellData) {
@@ -767,8 +765,15 @@ $(document).ready(function() {
         // Load the SVG file
         loadSvg(svgFile);
 
-        // Set TSV filename based on the selected GO term
-        const tsvFile = `data/${selectedGO}-ordered-2022-01.tsv`;
+        if (selectedGO in list_of_terms_2024 && $('#yearSelector').val() == "2024") {
+            // Set TSV filename based on the selected GO term
+            $('#goTermBeforeHeader').html("Currently we are using GO data retreived in 2024.02 from the <a href=\"http://www.geneontology.org/\" target=\"_blank\">Gene Ontology</a> website, with <a href=\"http://eggnog6.embl.de/#/app/home\" target=\"_blank\">eggNOG v6.0</a> database.");
+            const tsvFile = `data/${selectedGO}-ordered-2024-02.tsv`;
+        }
+        else {
+            // Set TSV filename based on the selected GO term
+            const tsvFile = `data/${selectedGO}-ordered-2022-01.tsv`;
+        }
 
         // Fetch data from TSV file
         $.ajax({
@@ -919,9 +924,7 @@ $(document).ready(function() {
         if($('#yearSelector').val() == "2022") {
             $('#goTermBeforeHeader').html("Currently we are using GO data retreived in 2022.02 from the <a href=\"http://www.geneontology.org/\" target=\"_blank\">Gene Ontology</a> website, with <a href=\"http://eggnog5.embl.de/#/app/home\" target=\"_blank\">eggNOG v5.0</a> database.");
         }
-        else if($('#yearSelector').val() == "2024") {
-            $('#goTermBeforeHeader').html("Currently we are using GO data retreived in 2024.02 from the <a href=\"http://www.geneontology.org/\" target=\"_blank\">Gene Ontology</a> website, with <a href=\"http://eggnog6.embl.de/#/app/home\" target=\"_blank\">eggNOG v6.0</a> database.");
-        }
+    
         // Trigger the data loading and overlap calculation process here
         $('#loadDataBtn').click();
     }); 
