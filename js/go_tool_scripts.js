@@ -769,9 +769,9 @@ $(document).ready(function() {
         // Set TSV filename based on the selected GO term
         var tsvFile = `data/${selectedGO}-ordered-2022-01.tsv`;
 
-        if (goID in list_of_terms_2024 && $('#yearSelector').val() == "2024") {
+        if ($('#yearSelector').val() == "2024") {
             // Set TSV filename based on the selected GO term
-            $('#goTermBeforeHeader').html("Currently we are using GO data retreived in 2024.02 from the <a href=\"http://www.geneontology.org/\" target=\"_blank\">Gene Ontology</a> website, with <a href=\"http://eggnog5.embl.de/#/app/home\" target=\"_blank\">eggNOG v5.0</a> database.");
+            $('#goTermBeforeHeader').html("Currently we are using GO data retreived in <b>2024.02</b> from the <a href=\"http://www.geneontology.org/\" target=\"_blank\">Gene Ontology</a> website, with <a href=\"http://eggnog5.embl.de/#/app/home\" target=\"_blank\">eggNOG v5.0</a> database.");
             tsvFile = `data/${selectedGO}-ordered-2024-02.tsv`;
         }
         
