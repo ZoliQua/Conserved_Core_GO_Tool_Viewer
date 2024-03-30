@@ -172,12 +172,12 @@
 	<text transform="matrix(1 0 0 1 812.2908 646.3877)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="36px" class="count" id="Count_F">Count_F</text>
 	<text transform="matrix(1 0 0 1 857.6548 343.658)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="36px" class="count" id="Count_G">Count_G</text>
 	<text transform="matrix(1 0 0 1 454.9164 442.2776)" fill="#FFFFFF" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="36px" class="count" id="Count_ABCDEFG">Count_ABCDEFG</text>
-	<text transform="matrix(1 0 0 1 682.12 54.5105)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="24px" class="name" id="Name_A">NameA</text>
-	<text transform="matrix(1 0 0 1 803.7157 154.723)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="24px" class="name" id="Name_G">NameG</text>
-	<text transform="matrix(1 0 0 1 821.4679 716.405)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="24px" class="name" id="Name_F">NameF</text>
-	<text transform="matrix(1 0 0 1 662.3279 829.1023)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="24px" class="name" id="Name_E">NameE</text>
-	<text transform="matrix(1 0 0 1 114.6655 751.1335)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="24px" class="name" id="Name_D">NameD</text>
-	<text transform="matrix(1 0 0 1 48.9135 266.1099)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="21px" class="name" id="Name_C">NameC</text>
-	<text transform="matrix(1 0 0 1 216.3187 78.1724)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="24px" class="name" id="Name_B">NameB</text>
+	<text transform="matrix(1 0 0 1 682.12 54.5105)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="24px" font-style="italic" class="name" id="Name_A">NameA</text>
+	<text transform="matrix(1 0 0 1 803.7157 154.723)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="24px" font-style="italic" class="name" id="Name_G">NameG</text>
+	<text transform="matrix(1 0 0 1 821.4679 716.405)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="24px" font-style="italic" class="name" id="Name_F">NameF</text>
+	<text transform="matrix(1 0 0 1 662.3279 829.1023)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="24px" font-style="italic" class="name" id="Name_E">NameE</text>
+	<text transform="matrix(1 0 0 1 114.6655 751.1335)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="24px" font-style="italic" class="name" id="Name_D">NameD</text>
+	<text transform="matrix(1 0 0 1 48.9135 266.1099)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="21px" font-style="italic" class="name" id="Name_C">NameC</text>
+	<text transform="matrix(1 0 0 1 216.3187 78.1724)" fill="#262262" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" font-family="'Tahoma'" font-size="24px" font-style="italic" class="name" id="Name_B">NameB</text>
 </g>
 </svg>
