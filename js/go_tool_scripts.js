@@ -7,7 +7,7 @@ var dataTable
 // Conatiner array for KOG group mapping
 let arrayKogGroupMapping = {};
 // Set the path to the SVG file (Venn Diagram)
-const svgFile = "data/ortholog_venn_7e.svg";
+const svgFile = "data/ortholog_venn_7eb.svg";
 
 // List of the names of species to show in the SVG
 const columnNames = {
